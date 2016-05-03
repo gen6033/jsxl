@@ -1,0 +1,27 @@
+{
+  "name": "jsxl",
+  "version": "1.0.0",
+  "description": "jsxl - Edit xlsx files",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gen6033/jsxl.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+		"postinstall": "coffee -bco lib/ src/"
+  },
+  "keywords": ["jsxl", "xlsx", "excel", "office", "spreadsheet", "workbook", "worksheet"],
+  "author": "Genki Sakanashi",
+  "license": "MIT",
+	"dependencies":{
+		"bluebird": "*",
+		"coffee-script": "*",
+		"xml2js": "*",
+		"node-zip":"*",
+		"extend":"*",
+		"js-object-clone":"*"
+	},
+  "main": "./lib/workbook.js",
+	"devDependencies":{
+	}
+}
