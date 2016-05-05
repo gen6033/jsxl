@@ -1,19 +1,26 @@
 Promise = require('bluebird')
 {parseStringAsync} = Promise.promisifyAll(require('xml2js'))
+processors = require('xml2js/lib/processors')
 Utils = require('./utils')
 Style = require('./style')
 Font = require('./style/font')
+Theme = require('./theme')
 require('js-object-clone')
 
 class StyleManager
-	@parse:(xml)->
-		parseStringAsync xml
+	@parse:(styleXml, themeXml)->
+		theme = null
+		parseStringAsync(themeXml, {tagNameProcessors: [processors.stripPrefix]})
 		.then (result)->
-			new StyleManager(result)
+			theme = new Theme(result)
+			parseStringAsync styleXml
+		.then (result)->
+			new StyleManager(result, theme)
 
-	constructor:(xmlobj)->
+	constructor:(xmlobj, theme)->
 		@_ = {}
 		@_.xmlobj = xmlobj
+		@_.theme = theme
 		ss = xmlobj.styleSheet
 
 		@_.fonts = []

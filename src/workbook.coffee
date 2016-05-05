@@ -5,6 +5,7 @@ xml2js = Promise.promisifyAll(require('xml2js'))
 SharedStringsTable = require('./shared_strings_table')
 StyleManager = require('./style_manager')
 Worksheet = require('./worksheet')
+Theme = require('./theme')
 Utils = require('./utils')
 parser = new xml2js.Parser()
 builder = new xml2js.Builder()
@@ -18,7 +19,7 @@ class Workbook
 		.then (data)->
 			workbook._.zip = zip = new Zip(data, {base64: false, checkCRC32: true})
 			jobs = []
-			jobs.push StyleManager.parse(zip.files["xl/styles.xml"].asText())
+			jobs.push StyleManager.parse(zip.files["xl/styles.xml"].asText(), zip.files["xl/theme/theme1.xml"].asText())
 			jobs.push SharedStringsTable.parse(zip.files["xl/sharedStrings.xml"].asText())
 			jobs.push parser.parseStringAsync zip.files["xl/workbook.xml"].asText()
 			Promise.all(jobs)
