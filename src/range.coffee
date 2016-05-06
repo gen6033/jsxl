@@ -54,7 +54,7 @@ class BlockRange
 				f(Utils.toAddr(r, c))
 
 	toString:->
-		return Utils.toAddr(top, left) if @top == @bottom && @left == @right
+		return Utils.toAddr(@top, @left) if @top == @bottom && @left == @right
 		Utils.toAddr(@top, @left) + ":" + Utils.toAddr(@bottom, @right)
 
 class Range
