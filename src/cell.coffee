@@ -41,7 +41,7 @@ class Cell
 		"value":
 			get: ->
 				switch @_.type
-					when null
+					when null,undefined
 						@_.value
 					else
 						@workbook._.sst.get(@_.value)
