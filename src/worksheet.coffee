@@ -22,9 +22,7 @@ class Worksheet
 		@_.id = parseInt id
 		@_.rid = parseInt rid
 		@_.name = name
-		[begin, end] = ws.dimension[0].$.ref.split(":")
-		[@_.top, @_.left] = Utils.toRowCol begin
-		[@_.bottom, @_.right] = Utils.toRowCol end
+		@_.dimension = new BlockRange(ws.dimension[0].$.ref)
 		@defaultColWidth = (parseFloat ws.sheetFormatPr[0].$.defaultColWidth) || 12
 		@defaultRowHeight = (parseFloat ws.sheetFormatPr[0].$.defaultRowHeight) || 20
 
@@ -67,13 +65,13 @@ class Worksheet
 		"name":
 			get: -> @_.name
 		"top":
-			get: -> @_.top
+			get: -> @_.dimension.top
 		"left":
-			get: -> @_.left
+			get: -> @_.dimension.left
 		"bottom":
-			get: -> @_.bottom
+			get: -> @_.dimension.bottom
 		"right":
-			get: -> @_.right
+			get: -> @_.dimension.right
 
 
 	getRow: (r)->
@@ -110,8 +108,7 @@ class Worksheet
 			pageSetup:[]
 		}
 		obj = extend obj,@_.xmlobj.worksheet
-		dim = obj.dimension[0].$
-		dim.ref = Utils.toAddr(@_.top, @_.left)+":"+Utils.toAddr(@_.bottom, @_.right)
+		obj.dimension[0].$.ref = @_.dimension.toString()
 		formatPtr = obj.sheetFormatPr[0].$
 		formatPtr.defaultColWidth = @defaultColWidth
 		formatPtr.defaultRowHeight = @defaultRowHeight
