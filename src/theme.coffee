@@ -16,6 +16,7 @@ class Theme
 				colors.push elm[0].sysClr[0].$.lastClr
 			else if elm[0].srgbClr
 				colors.push elm[0].srgbClr[0].$.val
+		[colors[0], colors[1], colors[2], colors[3]] = 	[colors[1], colors[0],colors[3], colors[2]]
 		@_.colors = colors
 
 
