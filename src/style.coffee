@@ -39,16 +39,16 @@ class Style
 		}}
 
 		if @_.applyFont
-			obj.applyFont = 1
+			obj.$.applyFont = 1
 
 		if @_.applyFill
-			obj.applyFill = 1
+			obj.$.applyFill = 1
 
 		if @_.applyBorder
-			obj.applyBorder = 1
+			obj.$.applyBorder = 1
 
 		if @_.applyAlignment
-			obj.applyAlignment = 1
+			obj.$.applyAlignment = 1
 
 		obj
 
