@@ -76,7 +76,7 @@ class Worksheet
 
 	getRow: (r)->
 		throw new Error "Index is out of range" unless r > 0
-		@_.rows[r] = @_.rows[r] || new Row(@workbook, this, r)
+		@_.rows[r] = @_.rows[r] || new Row(this, r)
 
 	getCell:(r, c)->
 		@getRow(r).getCell(c)
