@@ -2,8 +2,9 @@ Utils = require('./utils')
 {Range} = require('./range')
 
 class Cell
-	constructor:(@row, colIndex, xmlobj)->
+	constructor:(row, colIndex, xmlobj)->
 		@_ = {}
+		@_.row = row
 		@_.rowIndex = @row.rowIndex
 		@_.colIndex = colIndex
 		@_.type = xmlobj?.$.t
@@ -34,10 +35,10 @@ class Cell
 	Object.defineProperties @prototype,
 		"workbook":
 			get: -> @row.workbook
-
 		"worksheet":
 			get: -> @row.worksheet
-
+		"row":
+			get: -> @_.row
 		"value":
 			get: ->
 				switch @_.type

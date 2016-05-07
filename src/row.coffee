@@ -2,8 +2,9 @@ Cell = require('./cell')
 Utils = require('./utils')
 
 class Row
-	constructor:(@worksheet, rowIndex, xmlobj)->
+	constructor:(worksheet, rowIndex, xmlobj)->
 		@_ = {}
+		@_.worksheet = worksheet
 		@_.rowIndex = parseInt rowIndex
 		@_.begin = @_.end = 0
 		@_.height = null
@@ -27,6 +28,8 @@ class Row
 	Object.defineProperties @prototype,
 		"workbook":
 			get: -> @worksheet.workbook
+		"worksheet":
+			get: -> @_.worksheet
 		"rowIndex":
 			get: -> @_.rowIndex
 		"begin":
