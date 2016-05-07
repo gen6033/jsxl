@@ -7,11 +7,12 @@ class Row
 		@_.rowIndex = parseInt rowIndex
 		@_.begin = @_.end = 0
 		@_.height = null
-		@_.styleId = parseInt xmlobj.$.s
 		@_.cells = []
+		@_.styleId = 0
 
 		if xmlobj
 			[begin, end] = xmlobj.$.spans.split(":")
+			@_.styleId = parseInt xmlobj.$.s
 			@_.begin = parseInt begin
 			@_.end = parseInt end
 			@_.heightCustomized = (parseInt xmlobj.$.customHeight) == 1
