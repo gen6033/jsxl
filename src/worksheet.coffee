@@ -89,6 +89,8 @@ class Worksheet
 		@_.rows[r] = @_.rows[r] || new Row(this, r)
 
 	getColumn: (c)->
+		if isNaN(c)
+			return @getColumn Utils.toDigit(c)
 		throw new Error "Index is out of range" unless c > 0
 		cols = @_.cols
 		if cols[c]
