@@ -39,6 +39,9 @@ class Cell
 			get: -> @row.worksheet
 		"row":
 			get: -> @_.row
+		"column":
+			get: ->
+				@_.col = @_.col || @worksheet.getColumn(@_.colIndex)
 		"value":
 			get: ->
 				switch @_.type

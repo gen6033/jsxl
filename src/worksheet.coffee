@@ -2,10 +2,13 @@ Promise = require('bluebird')
 {parseStringAsync} = Promise.promisifyAll(require('xml2js'))
 processors = require('xml2js/lib/processors')
 Row = require('./row')
+Column = require('./column')
 Validation = require('./validation')
 Utils = require('./utils')
 {BlockRange} = require('./range')
 extend = require('extend')
+require('js-object-clone')
+
 
 class Worksheet
 
@@ -51,8 +54,15 @@ class Worksheet
 		@_.rows = []
 		if ws.sheetData[0]
 			for row_obj in ws.sheetData[0].row
-				row = row_obj.$.r
-				@_.rows[row] = new Row(this, row, row_obj)
+				rowIdx = row_obj.$.r
+				@_.rows[rowIdx] = new Row(this, rowIdx, row_obj)
+
+
+		@_.cols = []
+		if ws.cols?[0]
+			for col_obj in ws.cols[0].col
+				begin = parseInt col_obj.$.min
+				@_.cols[begin] = new Column(this, begin, col_obj)
 
 
 	Object.defineProperties @prototype,
@@ -77,6 +87,34 @@ class Worksheet
 	getRow: (r)->
 		throw new Error "Index is out of range" unless r > 0
 		@_.rows[r] = @_.rows[r] || new Row(this, r)
+
+	getColumn: (c)->
+		throw new Error "Index is out of range" unless c > 0
+		cols = @_.cols
+		if cols[c]
+			return cols[c]
+
+		if cols.length == 0
+			return @_.cols[c] = new Column(this, c)
+
+		i = c
+		if cols.length <= c
+			i = cols.length - 1
+
+		col = null
+		while i >= 0
+			col = cols[i]
+			break if col
+			--i
+
+		cols[c] = Object.clone(col)
+		cols[c]._ = Object.clone(col._)
+		cols[c]._.colIndex = c
+		unless cols[c+1]
+			cols[c+1] = Object.clone(col)
+			cols[c+1]._ = Object.clone(col._)
+			cols[c+1]._.colIndex = c+1
+		cols[c]
 
 	getCell:(r, c)->
 		@getRow(r).getCell(c)
@@ -112,6 +150,21 @@ class Worksheet
 		formatPtr = obj.sheetFormatPr[0].$
 		formatPtr.defaultColWidth = @defaultColWidth
 		formatPtr.defaultRowHeight = @defaultRowHeight
+
+
+		if @_.cols.length > 0
+			cols = []
+			col = null
+			for c,idx in @_.cols
+				if c
+					if col
+						col.$.max = idx - 1
+					col = c.toXmlObj()
+					col.$.min = idx
+					cols.push col
+
+			col.$.max = 16384
+			obj.cols = [{col:cols}]
 
 		obj.sheetData[0].row = []
 		for r in @_.rows
