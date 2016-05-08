@@ -8,10 +8,13 @@ class Row
 		@_.rowIndex = parseInt rowIndex
 		@_.height = null
 		@_.cells = []
-		@_.styleId = 0
+
+		styleId = parseInt xmlobj?.$.s
+		unless styleId
+			styleId = 0
+		@_.style = @workbook._.sm.getStyle(styleId)
 
 		if xmlobj
-			@_.styleId = parseInt xmlobj.$.s
 			@_.heightCustomized = (parseInt xmlobj.$.customHeight) == 1
 			@_.height = parseFloat xmlobj.$.ht
 
@@ -38,11 +41,16 @@ class Row
 			set:(ht)->
 				@_.heightCustomized = true
 				@_.height = ht
+		"style":
+			get: ->
+				s = @_.style.clone()
+				@_.style = s
+				s
 
 	getCell: (c)->
 		throw new Error "Index is out of range" unless c > 0
 		@_.cells[c] || @_.cells[c] = new Cell(this, c)
-		
+
 	toXmlObj: ->
 		obj = {
 			$:{
@@ -52,7 +60,7 @@ class Row
 			}
 			c:[]
 		}
-		obj.$.s = @_.styleId if @_.styleId
+		obj.$.s = @_.style.id
 
 		if @_.heightCustomized
 			obj.$.ht = @_.height
