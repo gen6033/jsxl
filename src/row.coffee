@@ -6,16 +6,12 @@ class Row
 		@_ = {}
 		@_.worksheet = worksheet
 		@_.rowIndex = parseInt rowIndex
-		@_.begin = @_.end = 0
 		@_.height = null
 		@_.cells = []
 		@_.styleId = 0
 
 		if xmlobj
-			[begin, end] = xmlobj.$.spans.split(":")
 			@_.styleId = parseInt xmlobj.$.s
-			@_.begin = parseInt begin
-			@_.end = parseInt end
 			@_.heightCustomized = (parseInt xmlobj.$.customHeight) == 1
 			@_.height = parseFloat xmlobj.$.ht
 
@@ -33,9 +29,9 @@ class Row
 		"rowIndex":
 			get: -> @_.rowIndex
 		"begin":
-			get: -> @_.begin
+			get: -> @worksheet.left
 		"end":
-			get: -> @_.end
+			get: -> @worksheet.right
 		"height":
 			get:->
 				@_.height || @worksheet.defaultHeight
@@ -45,20 +41,13 @@ class Row
 
 	getCell: (c)->
 		throw new Error "Index is out of range" unless c > 0
-		unless @_.cells[c]
-			@_.cells[c] = new Cell(this, c)
-			if c < @_.begin
-				@_.begin = c
-				@_.end = @_.begin if @_.begin > @_.end
-			else if c > @_.end
-				@_.end = c
-		@_.cells[c]
-
+		@_.cells[c] || @_.cells[c] = new Cell(this, c)
+		
 	toXmlObj: ->
 		obj = {
 			$:{
 				r:@_.rowIndex
-				spans:@_.begin+":"+@_.end
+				spans:@begin+":"+@end
 				"x14ac:dyDescent":"0.3"
 			}
 			c:[]
