@@ -33,9 +33,9 @@ class Row
 		"rowIndex":
 			get: -> @_.rowIndex
 		"begin":
-			get: -> @_.begin
+			get: -> @worksheet.left
 		"end":
-			get: -> @_.end
+			get: -> @worksheet.right
 		"height":
 			get:->
 				@_.height || @worksheet.defaultHeight
