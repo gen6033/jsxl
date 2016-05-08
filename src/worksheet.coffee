@@ -60,9 +60,15 @@ class Worksheet
 
 		@_.cols = []
 		if ws.cols?[0]
+			@_.cols[1] = new Column(this, 1)
+			max = 0
 			for col_obj in ws.cols[0].col
 				begin = parseInt col_obj.$.min
+				max = parseInt col_obj.$.max
 				@_.cols[begin] = new Column(this, begin, col_obj)
+
+			if max != 16384
+				@_.cols[max+1] = new Column(this, max+1)
 
 
 	Object.defineProperties @prototype,
