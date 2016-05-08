@@ -5,7 +5,7 @@ class Column
 		attr = xmlobj?.$
 		@_.worksheet = worksheet
 		@_.colIndex = parseInt colIndex
-		@width = attr.width
+		@width = @worksheet.defaultColWidth
 		@hidden = false
 		@bestFit = false
 		@collapsed = false
@@ -16,6 +16,7 @@ class Column
 		@_.style = @workbook._.sm.getStyle(styleId)
 
 		if attr
+			@width = attr.width
 			@hidden = !!(parseInt attr.hidden)
 			@bestFit = !!(parseInt attr.bestFit)
 			@collapsed = !!(parseInt attr.collapsed)
