@@ -7,18 +7,23 @@ class SharedStringsTable
 
 	@parse:(xml)->
 		return new Promise (resolve, reject)->
+			unless xml
+				resolve(new SharedStringsTable)
+				return
 			parser.parseString xml,(err, result)->
 				resolve(new SharedStringsTable(result))
 
 
 	constructor:(xmlobj)->
 		@_ = {}
-		@_.xmlobj = xmlobj
-		@_.count = xmlobj.sst.$.count
-		@_.uniqueCount = xmlobj.sst.$.uniqueCount
+		@_.count = 0
+		@_.uniqueCount = 0
 		@_.strings = []
-		for si in xmlobj.sst.si
-			@_.strings.push si.t[0]
+		if xmlobj
+			@_.count = xmlobj.sst.$.count
+			@_.uniqueCount = xmlobj.sst.$.uniqueCount
+			for si in xmlobj.sst.si
+				@_.strings.push si.t[0]
 
 
 	Object.defineProperties @prototype,
@@ -39,7 +44,7 @@ class SharedStringsTable
 		idx
 
 	toXmlObj: ->
-		obj = @_.xmlobj.sst
+		obj = {$:{xmlns:"http://schemas.openxmlformats.org/spreadsheetml/2006/main"}}
 		obj.$.count = @count
 		obj.$.uniqueCount = @uniqueCount
 		obj.si = []
@@ -47,7 +52,8 @@ class SharedStringsTable
 			obj.si.push {
 				t:[str]
 			}
-		@_.xmlobj
+
+		{sst:obj}
 
 
 module.exports = SharedStringsTable

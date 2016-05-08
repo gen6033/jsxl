@@ -20,7 +20,7 @@ class Workbook
 			workbook._.zip = zip = new Zip(data, {base64: false, checkCRC32: true})
 			jobs = []
 			jobs.push StyleManager.parse(zip.files["xl/styles.xml"].asText(), zip.files["xl/theme/theme1.xml"].asText())
-			jobs.push SharedStringsTable.parse(zip.files["xl/sharedStrings.xml"].asText())
+			jobs.push SharedStringsTable.parse(zip.files["xl/sharedStrings.xml"]?.asText())
 			jobs.push parser.parseStringAsync zip.files["xl/workbook.xml"].asText()
 			Promise.all(jobs)
 		.then ([sm, sst, wb])->
