@@ -1,4 +1,4 @@
-Utils = require('./utils')
+Utils = require('../utils')
 
 class Style
 	constructor:(id, sm, xmlobj)->
