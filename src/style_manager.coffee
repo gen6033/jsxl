@@ -49,7 +49,7 @@ class StyleManager
 
 		resources.push newResource
 		newId = resources.length - 1
-		newResource._.id = newId
+		newResource.id = newId
 		newResource
 
 

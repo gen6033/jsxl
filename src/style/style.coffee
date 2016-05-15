@@ -4,10 +4,10 @@ class Style
 	constructor:(id, sm, xmlobj)->
 		attr = xmlobj.$
 		@_ = {}
-		@_.id = id
-		@_.sm = sm
+		@id = id
+		@sm = sm
 		@_.numFmtId = parseInt attr.numFmtId
-		@_.font = @_.sm.getFont(parseInt attr.fontId)
+		@font = @sm.getFont(parseInt attr.fontId)
 		@_.fillId = parseInt attr.fillId
 		@_.borderId = parseInt attr.borderId
 		@_.applyFont = !!(parseInt attr.applyFont)
@@ -16,24 +16,14 @@ class Style
 		@_.applyAlignment = !!(parseInt attr.applyAlignment)
 
 
-	Object.defineProperties @prototype,
-		"id":
-			get: ->
-				@_.id
-		"font":
-			get: ->
-				f = @_.font.clone()
-				@_.font = f
-				f
-
 
 	clone: ->
-		@_.sm.cloneResource(this)
+		@sm.cloneResource(this)
 
 	toXmlObj:->
 		obj = {$:{
 			numFmtId:@_.numFmtId
-			fontId:@_.font.id
+			fontId:@font.id
 			fillId:@_.fillId
 			borderId:@_.borderId
 		}}

@@ -7,7 +7,7 @@ class Font
 	constructor:(id, sm, xmlobj)->
 		@_ = {}
 		@_.xmlobj = xmlobj
-		@_.id = id
+		@id = id
 		@_.sm = sm
 		@size = parseInt xmlobj.sz?[0].$.val
 		colorAttrs = xmlobj.color?[0].$ || {}
@@ -25,14 +25,6 @@ class Font
 		#@_.charset = parseInt xmlobj.charset?[0].$.val
 		#@_.family = parseInt xmlobj.family?[0].$.val
 		#@_.scheme = xmlobj.scheme?[0].$.val
-
-	Object.defineProperties @prototype,
-		"id":
-			get: -> @_.id
-		"charset":
-			get: -> @_.charset
-		"scheme":
-			get: -> @_.scheme
 
 
 	clone: ->
