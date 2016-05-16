@@ -127,6 +127,14 @@ class Worksheet
 	getCell:(r, c)->
 		@getRow(r).getCell(c)
 
+	eachRow:(f)->
+		for r in [@top..@bottom]
+			f(@getRow(r))
+
+	eachColumn:(f)->
+		for c in [@left..@right]
+			f(@getColumn(c))
+
 	merge:(top, left, bottom, right)->
 		range = new BlockRange(top, left, bottom, right)
 		for r in @_.mergedCells
