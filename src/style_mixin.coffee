@@ -4,22 +4,22 @@ class StyleMixin
 
 	@mixin: (proto)->
 		cloneStyle = (self)->
+			return if self._.styleMixin.styleCloned
 			mixin = self._.styleMixin = Object.clone(self._.styleMixin)
 			mixin.style = mixin.sm.cloneResource(mixin.style)
+			mixin.styleCloned = true
 
 		cloneFont = (self)->
+			return if self._.styleMixin.fontCloned
 			cloneStyle(self)
 			mixin = self._.styleMixin
 			mixin.style.font = mixin.sm.cloneResource(mixin.style.font)
+			mixin.fontCloned = true
 
 		fontSetter = (self, key, val) ->
-			mixin = self._.styleMixin
-			if mixin.cloned
-				return mixin.style.font[key] = val
 			cloneFont(self)
 			mixin = self._.styleMixin
 			mixin.style.font[key] = val
-			mixin.cloned = true
 			mixin.onUpdate?()
 
 
