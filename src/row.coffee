@@ -1,17 +1,20 @@
 Cell = require('./cell')
 Utils = require('./utils')
+StyleMixin = require('./style_mixin')
 
 class Row
+	StyleMixin.mixin(@prototype)
+
 	constructor:(worksheet, rowIndex, xmlobj)->
 		@_ = {}
 		@_.worksheet = worksheet
 		@_.rowIndex = parseInt rowIndex
 		@_.height = null
 		@_.cells = []
-		@_.styleId = 0
+
+
 
 		if xmlobj
-			@_.styleId = parseInt xmlobj.$.s
 			@_.heightCustomized = (parseInt xmlobj.$.customHeight) == 1
 			@_.height = parseFloat xmlobj.$.ht
 
@@ -20,6 +23,12 @@ class Row
 					[tmp, col] = Utils.toRowCol cell_obj.$.r
 					@_.cells[col] = new Cell(this, col, cell_obj)
 
+		styleId = (parseInt xmlobj?.$.s) || 0
+		StyleMixin.bind(this, styleId)
+		@_.styleMixin.onUpdate = =>
+			for cell in @_.cells
+				continue unless cell
+				cell._.styleMixin.style = @_.styleMixin.style
 
 	Object.defineProperties @prototype,
 		"workbook":
@@ -56,7 +65,7 @@ class Row
 			}
 			c:[]
 		}
-		obj.$.s = @_.styleId if @_.styleId
+		obj.$.s = @_.styleMixin.style.id
 
 		if @_.heightCustomized
 			obj.$.ht = @_.height

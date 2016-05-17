@@ -1,20 +1,21 @@
 Utils = require('./utils')
 {Range} = require('./range')
+StyleMixin = require('./style_mixin')
 
 class Cell
+	StyleMixin.mixin(@prototype)
+
 	constructor:(row, colIndex, xmlobj)->
 		@_ = {}
 		@_.row = row
 		@_.rowIndex = @row.rowIndex
 		@_.colIndex = colIndex
 		@_.type = xmlobj?.$.t
-		styleId = parseInt xmlobj?.$.s
 		@_.value = xmlobj?.v?[0]
 		@_.formula = xmlobj?.f?[0]
 
-		unless styleId
-			styleId = 0
-		@_.style = @workbook._.sm.getStyle(styleId)
+		styleId = (parseInt xmlobj?.$.s) || 0
+		StyleMixin.bind(this, styleId)
 
 		if @_.value?._
 			@_.value = @_.value._
@@ -99,8 +100,7 @@ class Cell
 			else
 				obj.v = [{$:{"xml:space":"preserve"}, _:value}]
 
-		if @_.style
-			obj.$.s = @_.style.id
+		obj.$.s = @_.styleMixin.style.id
 
 		if @_.type
 			obj.$.t = @_.type

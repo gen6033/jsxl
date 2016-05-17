@@ -2,7 +2,7 @@ Promise = require('bluebird')
 {parseStringAsync} = Promise.promisifyAll(require('xml2js'))
 processors = require('xml2js/lib/processors')
 Utils = require('./utils')
-Style = require('./style')
+Style = require('./style/style')
 Font = require('./style/font')
 Theme = require('./theme')
 require('js-object-clone')
@@ -49,7 +49,7 @@ class StyleManager
 
 		resources.push newResource
 		newId = resources.length - 1
-		newResource._.id = newId
+		newResource.id = newId
 		newResource
 
 
