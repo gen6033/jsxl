@@ -1,5 +1,8 @@
+StyleMixin = require('./style_mixin')
 
 class Column
+	StyleMixin.mixin(@prototype)
+
 	constructor:(worksheet, colIndex, xmlobj)->
 		@_ = {}
 		attr = xmlobj?.$
@@ -10,10 +13,11 @@ class Column
 		@bestFit = false
 		@collapsed = false
 
-		styleId = parseInt attr?.style
-		unless styleId
-			styleId = 0
-		@_.style = @workbook._.sm.getStyle(styleId)
+		styleId = (parseInt attr?.style) || 0
+		StyleMixin.bind(this, styleId)
+		@_.styleMixin.onUpdate = =>
+			@eachCell (cell)=>
+				cell._.styleMixin.style = @_.styleMixin.style
 
 		if attr
 			@width = attr.width
@@ -43,7 +47,7 @@ class Column
 		attr.min = 0
 		attr.max = 0
 		attr.width = @width
-		attr.style = @_.style.id
+		attr.style = @_.styleMixin.style.id
 		attr.hidden = 1 if @hidden
 		attr.bestFit = 1 if @bestFit
 		attr.collapsed = 1 if @collapsed

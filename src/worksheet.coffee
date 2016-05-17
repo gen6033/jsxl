@@ -100,8 +100,12 @@ class Worksheet
 		throw new Error "Index is out of range" unless c > 0
 		cols = @_.cols
 		if cols[c]
-			return cols[c]
+			unless cols[c+1]
+				cols[c+1] = Object.clone(cols[c])
+				cols[c+1]._ = Object.clone(cols[c]._)
+				cols[c+1]._.colIndex = c+1
 
+			return cols[c]
 		if cols.length == 0
 			return @_.cols[c] = new Column(this, c)
 
