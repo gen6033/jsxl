@@ -1,10 +1,10 @@
-
+require('js-object-clone')
 
 class StyleMixin
 
 	@mixin: (proto)->
 		cloneStyle = (self)->
-			mixin = self._.styleMixin
+			mixin = self._.styleMixin = Object.clone(self._.styleMixin)
 			mixin.style = mixin.sm.cloneResource(mixin.style)
 
 		cloneFont = (self)->
@@ -17,6 +17,7 @@ class StyleMixin
 			if mixin.cloned
 				return mixin.style.font[key] = val
 			cloneFont(self)
+			mixin = self._.styleMixin
 			mixin.style.font[key] = val
 			mixin.cloned = true
 			mixin.onUpdate?()
