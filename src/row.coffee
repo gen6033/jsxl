@@ -65,7 +65,9 @@ class Row
 			}
 			c:[]
 		}
-		obj.$.s = @_.styleMixin.style.id
+		styleId = @_.styleMixin.style.id
+		obj.$.s = styleId
+		obj.$.customFormat = 1 if styleId != 0
 
 		if @_.heightCustomized
 			obj.$.ht = @_.height
