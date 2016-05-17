@@ -24,6 +24,10 @@ class Column
 	getCell: (r)->
 		@worksheet.getCell(r, @colIndex)
 
+	eachCell: (f)->
+		for idx in [@_.worksheet.top..@_.worksheet.bottom]
+			f(@getCell(idx))
+
 	Object.defineProperties @prototype,
 		"workbook":
 			get: -> @worksheet.workbook

@@ -42,7 +42,11 @@ class Row
 	getCell: (c)->
 		throw new Error "Index is out of range" unless c > 0
 		@_.cells[c] || @_.cells[c] = new Cell(this, c)
-		
+
+	eachCell: (f)->
+		for idx in [@_.worksheet.left..@_.worksheet.right]
+			f(@getCell(idx))
+
 	toXmlObj: ->
 		obj = {
 			$:{
