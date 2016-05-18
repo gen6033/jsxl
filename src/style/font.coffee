@@ -30,7 +30,10 @@ class Font
 			obj.name = [{$:{val:@name}}]
 
 		if @color
-			obj.color = [{$:{rgb:@color}}]
+			if @color == "auto"
+				obj.color = [{$:{auto:1}}]
+			else
+				obj.color = [{$:{rgb:@color}}]
 
 		obj
 

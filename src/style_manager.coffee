@@ -54,6 +54,8 @@ class StyleManager
 			color = COLOR_TABLE[parseInt colorAttrs.indexed]
 		else if colorAttrs.theme
 			color = @theme.getColor(colorAttrs.theme)
+		else if colorAttrs.auto
+			color = "auto"
 		color
 
 	cloneResource:(resource)->

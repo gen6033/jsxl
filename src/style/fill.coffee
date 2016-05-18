@@ -60,10 +60,16 @@ class Fill
 		fill.$.patternType = @type
 
 		if @_.fgColor
-			fill.fgColor = [{$:{rgb:@_.fgColor}}]
+			if @_.fgColor == "auto"
+				fill.fgColor = [{$:{auto:1}}]
+			else
+				fill.fgColor = [{$:{rgb:@_.fgColor}}]
 
 		if @_.bgColor
-			fill.bgColor = [{$:{rgb:@_.bgColor}}]
+			if @_.bgColor == "auto"
+				fill.bgColor = [{$:{auto:1}}]
+			else
+				fill.bgColor = [{$:{rgb:@_.bgColor}}]
 
 		obj
 
