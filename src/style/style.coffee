@@ -8,7 +8,7 @@ class Style
 		@sm = sm
 		@_.numFmtId = parseInt attr.numFmtId
 		@font = @sm.getFont(parseInt attr.fontId)
-		@_.fillId = parseInt attr.fillId
+		@fill = @sm.getFill(parseInt attr.fillId)
 		@_.borderId = parseInt attr.borderId
 		@_.applyFont = !!(parseInt attr.applyFont)
 		@_.applyFill = !!(parseInt attr.applyFill)
@@ -24,7 +24,7 @@ class Style
 		obj = {$:{
 			numFmtId:@_.numFmtId
 			fontId:@font.id
-			fillId:@_.fillId
+			fillId:@fill.id
 			borderId:@_.borderId
 		}}
 

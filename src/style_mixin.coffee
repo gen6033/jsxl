@@ -22,6 +22,19 @@ class StyleMixin
 			mixin.style.font[key] = val
 			mixin.onUpdate?()
 
+		cloneFill = (self)->
+			return if self._.styleMixin.fillCloned
+			cloneStyle(self)
+			mixin = self._.styleMixin
+			mixin.style.fill = mixin.sm.cloneResource(mixin.style.fill)
+			mixin.fillCloned = true
+
+		fillSetter = (self, key, val) ->
+			cloneFill(self)
+			mixin = self._.styleMixin
+			mixin.style.fill[key] = val
+			mixin.onUpdate?()
+
 
 		Object.defineProperties proto,
 			"fontName":
@@ -38,6 +51,21 @@ class StyleMixin
 				get: -> @_.styleMixin.style.font.color
 				set: (val)->
 					fontSetter(this, "color", val)
+
+			"fillPattern":
+				get: -> @_.styleMixin.style.fill.type
+				set: (val)->
+					fillSetter(this, "type", val)
+
+			"fillPatternColor":
+				get: -> @_.styleMixin.style.fill.fgColor
+				set: (val)->
+					fillSetter(this, "fgColor", val)
+
+			"fillColor":
+				get: -> @_.styleMixin.style.fill.bgColor
+				set: (val)->
+					fillSetter(this, "bgColor", val)
 
 	@bind: (obj, styleId)->
 		new StyleMixin(obj, styleId)
