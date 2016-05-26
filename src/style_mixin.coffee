@@ -35,6 +35,18 @@ class StyleMixin
 			mixin.style.fill[key] = val
 			mixin.onUpdate?()
 
+		cloneBorder = (self)->
+			return if self._.styleMixin.borderCloned
+			cloneStyle(self)
+			mixin = self._.styleMixin
+			mixin.style.border = mixin.sm.cloneResource(mixin.style.border)
+			mixin.borderCloned = true
+
+		borderSetter = (self, key, val) ->
+			cloneBorder(self)
+			mixin = self._.styleMixin
+			mixin.style.border[key] = val
+			mixin.onUpdate?()
 
 		Object.defineProperties proto,
 			"fontName":
@@ -66,6 +78,30 @@ class StyleMixin
 				get: -> @_.styleMixin.style.fill.bgColor
 				set: (val)->
 					fillSetter(this, "bgColor", val)
+
+			"borderDiagonalUp":
+				get: -> @_.styleMixin.style.border.diagonalUp
+				set: (val)->
+					borderSetter(this, "diagonalUp", val)
+
+			"borderDiagonalDown":
+				get: -> @_.styleMixin.style.border.diagonalDown
+				set: (val)->
+					borderSetter(this, "diagonalDown", val)
+
+		for d in ["Left", "Right", "Top", "Bottom", "Diagonal"]
+			do ->
+				direction = d
+				Object.defineProperty proto, "border"+direction+"Color", {
+					get: -> @_.styleMixin.style.border[direction.toLowerCase()+"Color"]
+					set: (val)->
+						borderSetter(this, direction.toLowerCase()+"Color", val)
+				}
+				Object.defineProperty proto, "border"+direction+"Style", {
+					get: -> @_.styleMixin.style.border[direction.toLowerCase()+"Style"]
+					set: (val)->
+						borderSetter(this, direction.toLowerCase()+"Style", val)
+				}
 
 	@bind: (obj, styleId)->
 		new StyleMixin(obj, styleId)

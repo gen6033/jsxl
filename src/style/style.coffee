@@ -9,7 +9,7 @@ class Style
 		@_.numFmtId = parseInt attr.numFmtId
 		@font = @sm.getFont(parseInt attr.fontId)
 		@fill = @sm.getFill(parseInt attr.fillId)
-		@_.borderId = parseInt attr.borderId
+		@border = @sm.getBorder(parseInt attr.borderId)
 		@_.applyFont = !!(parseInt attr.applyFont)
 		@_.applyFill = !!(parseInt attr.applyFill)
 		@_.applyBorder = !!(parseInt attr.applyBorder)
@@ -25,7 +25,7 @@ class Style
 			numFmtId:@_.numFmtId
 			fontId:@font.id
 			fillId:@fill.id
-			borderId:@_.borderId
+			borderId:@border.id
 		}}
 
 		if @_.applyFont

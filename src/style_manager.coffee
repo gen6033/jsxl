@@ -5,6 +5,7 @@ Utils = require('./utils')
 Style = require('./style/style')
 Font = require('./style/font')
 Fill = require('./style/fill')
+Border = require('./style/border')
 Theme = require('./theme')
 require('js-object-clone')
 
@@ -33,6 +34,10 @@ class StyleManager
 		for fill,idx in ss.fills[0].fill
 			@_.fills.push new Fill(idx, this, fill)
 
+		@_.borders = []
+		for border,idx in ss.borders[0].border
+			@_.borders.push new Border(idx, this, border)
+
 		@_.styles = []
 		for xf,idx in ss.cellXfs[0].xf
 			@_.styles.push new Style(idx, this, xf)
@@ -45,6 +50,9 @@ class StyleManager
 
 	getFill:(id)->
 		@_.fills[id]
+
+	getBorder:(id)->
+		@_.borders[id]
 
 	getRGB:(colorAttrs = {})->
 		color = null
@@ -69,6 +77,8 @@ class StyleManager
 				resources = @_.fonts
 			when "Fill"
 				resources = @_.fills
+			when "Border"
+				resources = @_.borders
 
 		resources.push newResource
 		newId = resources.length - 1
@@ -86,6 +96,10 @@ class StyleManager
 		ss.fills = [{fill:[]}]
 		for fill in @_.fills
 			ss.fills[0].fill.push fill.toXmlObj()
+
+		ss.borders = [{border:[]}]
+		for border in @_.borders
+			ss.borders[0].border.push border.toXmlObj()
 
 		ss.cellXfs = [{xf:[]}]
 		for style in @_.styles
