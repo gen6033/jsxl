@@ -95,6 +95,7 @@ class Cell
 
 		value = @_.value
 		if value
+			value = value + ""
 			if value == value.trim()
 				obj.v = [value]
 			else
