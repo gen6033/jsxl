@@ -49,6 +49,8 @@ class Row
 				@_.height = ht
 
 	getCell: (c)->
+		if isNaN(c)
+			return @getCell (@worksheet.headers.indexOf(c) + 1)
 		throw new Error "Index is out of range" unless c > 0
 		@_.cells[c] || @_.cells[c] = new Cell(this, c)
 

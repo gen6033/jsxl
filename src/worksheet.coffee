@@ -28,6 +28,7 @@ class Worksheet
 		@_.dimension = new BlockRange(ws.dimension[0].$.ref)
 		@defaultColWidth = (parseFloat ws.sheetFormatPr[0].$.defaultColWidth) || 12
 		@defaultRowHeight = (parseFloat ws.sheetFormatPr[0].$.defaultRowHeight) || 20
+		@headers = []
 
 		extLst = ws.extLst?[0]
 		if extLst
@@ -96,7 +97,7 @@ class Worksheet
 
 	getColumn: (c)->
 		if isNaN(c)
-			return @getColumn Utils.toDigit(c)
+			return @getColumn (@headers.indexOf(c) + 1)
 		throw new Error "Index is out of range" unless c > 0
 		cols = @_.cols
 		if cols[c]
