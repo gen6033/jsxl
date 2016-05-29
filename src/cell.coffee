@@ -46,10 +46,10 @@ class Cell
 		"value":
 			get: ->
 				switch @_.type
-					when null,undefined
-						@_.value
-					else
+					when "s"
 						@workbook._.sst.get(@_.value)
+					else
+						@_.value
 
 			set: (val) ->
 				switch typeof val
