@@ -30,6 +30,7 @@ class Workbook
 			jobs = []
 			workbook._.sheets = []
 			workbook._.sheetIdxs = {}
+			workbook.path = fs.realpathSync excel_path
 			for s in wb.workbook.sheets[0].sheet
 				sheet_name = s.$.name
 				workbook._.sheetIdxs[sheet_name] = i-1
@@ -49,7 +50,8 @@ class Workbook
 	getSheetByName: (name)->
 		@getSheet @_.sheetIdxs[name]
 
-	save: (path)->
+	save: (path = null)->
+		path = @path if path == null
 		@_.zip.file("xl/sharedStrings.xml", builder.buildObject @_.sst.toXmlObj())
 		@_.zip.file("xl/styles.xml", builder.buildObject @_.sm.toXmlObj())
 
