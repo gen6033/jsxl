@@ -50,7 +50,7 @@ class Cell
 				val = @_.value
 				switch @_.type
 					when "s"
-						@workbook._.sst.get(@_.value)
+						val = @workbook._.sst.get(@_.value)
 				if @_.styleMixin.style.numberFormat.isDate()
 					val = new Date(Cell.BASE_TIME + (parseFloat(val)*60*60*24*1000))
 				val
