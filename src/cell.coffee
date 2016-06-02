@@ -5,6 +5,8 @@ StyleMixin = require('./style_mixin')
 class Cell
 	StyleMixin.mixin(@prototype)
 
+	@BASE_TIME = new Date("1899/12/30") * 1
+
 	constructor:(row, colIndex, xmlobj)->
 		@_ = {}
 		@_.row = row
@@ -45,19 +47,23 @@ class Cell
 				@_.col = @_.col || @worksheet.getColumn(@_.colIndex)
 		"value":
 			get: ->
+				val = @_.value
 				switch @_.type
 					when "s"
 						@workbook._.sst.get(@_.value)
-					else
-						@_.value
+				if @_.styleMixin.style.numberFormat.isDate()
+					val = new Date(Cell.BASE_TIME + (parseFloat(val)*60*60*24*1000))
+				val
 
 			set: (val) ->
-				switch typeof val
-					when "number"
-						@_.type = null
-					else
-						val = @workbook._.sst.add(val)
-						@_.type = "s"
+				if typeof val ==  "number"
+					@_.type = null
+				else if val instanceof Date
+					@_.type = null
+					val = (val - Cell.BASE_TIME)/(60*60*24*1000)
+				else
+					val = @workbook._.sst.add(val)
+					@_.type = "s"
 
 				@_.value = val
 
