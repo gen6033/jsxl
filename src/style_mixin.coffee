@@ -48,6 +48,13 @@ class StyleMixin
 			mixin.style.border[key] = val
 			mixin.onUpdate?()
 
+		cloneNumberFormat = (self)->
+			return if self._.styleMixin.numberFormatCloned
+			cloneStyle(self)
+			mixin = self._.styleMixin
+			mixin.style.numberFormat = mixin.sm.cloneResource(mixin.style.numberFormat)
+			mixin.numberFormatCloned = true
+
 		Object.defineProperties proto,
 			"fontName":
 				get: -> @_.styleMixin.style.font.name
@@ -88,6 +95,15 @@ class StyleMixin
 				get: -> @_.styleMixin.style.border.diagonalDown
 				set: (val)->
 					borderSetter(this, "diagonalDown", val)
+
+			"numberFormat":
+				get: -> @_.styleMixin.style.numberFormat.format
+				set: (val)->
+					cloneNumberFormat(this)
+					mixin = @_.styleMixin
+					mixin.style.numberFormat.format = val
+					mixin.onUpdate?()
+
 
 		for d in ["Left", "Right", "Top", "Bottom", "Diagonal"]
 			do ->
