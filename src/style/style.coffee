@@ -3,17 +3,17 @@ Utils = require('../utils')
 class Style
 	constructor:(id, sm, xmlobj)->
 		attr = xmlobj.$
-		@_ = {}
 		@id = id
 		@sm = sm
-		@_.numFmtId = parseInt attr.numFmtId
+		@aaaa = attr.numFmtId
+		@numberFormat = @sm.getNumberFormat(parseInt attr.numFmtId)
 		@font = @sm.getFont(parseInt attr.fontId)
 		@fill = @sm.getFill(parseInt attr.fillId)
 		@border = @sm.getBorder(parseInt attr.borderId)
-		@_.applyFont = !!(parseInt attr.applyFont)
-		@_.applyFill = !!(parseInt attr.applyFill)
-		@_.applyBorder = !!(parseInt attr.applyBorder)
-		@_.applyAlignment = !!(parseInt attr.applyAlignment)
+		@applyFont = !!(parseInt attr.applyFont)
+		@applyFill = !!(parseInt attr.applyFill)
+		@applyBorder = !!(parseInt attr.applyBorder)
+		@applyAlignment = !!(parseInt attr.applyAlignment)
 
 
 
@@ -22,22 +22,22 @@ class Style
 
 	toXmlObj:->
 		obj = {$:{
-			numFmtId:@_.numFmtId
+			numFmtId:@numberFormat?.id || 0
 			fontId:@font.id
 			fillId:@fill.id
 			borderId:@border.id
 		}}
 
-		if @_.applyFont
+		if @applyFont
 			obj.$.applyFont = 1
 
-		if @_.applyFill
+		if @applyFill
 			obj.$.applyFill = 1
 
-		if @_.applyBorder
+		if @applyBorder
 			obj.$.applyBorder = 1
 
-		if @_.applyAlignment
+		if @applyAlignment
 			obj.$.applyAlignment = 1
 
 		obj
