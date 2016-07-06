@@ -29,11 +29,20 @@ class Cell
 				if @_.formula
 					range = new Range(attr.ref)
 					@worksheet._.sft = {} unless @worksheet._.sft
-					range.each (addr)=>
-						@worksheet._.sft[addr] = @_.formula
+					@worksheet._.sft[attr.si] = [@_.formula, @rowIndex, @colIndex]
 				else
-					@_.formula = @worksheet._.sft[@addr]
-
+					[formula, rowIdx, colIdx] = @worksheet._.sft[attr.si]
+					@_.formula = formula.replace /(".*?")|(\$?)([A-Z]+)(\$?)(\d+)/g, (m0, m1, m2, m3, m4, m5)=>
+						return m1 if m1
+						c = Utils.toDigit(m3)
+						r = parseInt m5
+						rr = @rowIndex
+						cc = @colIndex
+						unless m2
+							cc -= colIdx - c
+						unless m4
+							rr -= rowIdx - r
+						return Utils.toAddr(rr, cc)
 
 	Object.defineProperties @prototype,
 		"workbook":
