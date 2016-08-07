@@ -23,7 +23,10 @@ class SharedStringsTable
       @_.count = xmlobj.sst.$.count
       @_.uniqueCount = xmlobj.sst.$.uniqueCount
       for si in xmlobj.sst.si
-        @_.strings.push si.t[0]
+        str = si.t[0]
+        if str._
+          str = str._
+        @_.strings.push str.replace(/\r/g, "")
 
 
   Object.defineProperties @prototype,
