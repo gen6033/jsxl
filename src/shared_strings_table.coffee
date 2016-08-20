@@ -26,6 +26,7 @@ class SharedStringsTable
         str = si.t[0]
         if str._
           str = str._
+        str += ""
         @_.strings.push str.replace(/\r/g, "")
 
 
