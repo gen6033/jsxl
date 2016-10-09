@@ -19,7 +19,7 @@ class SharedStringsTable
     @_.count = 0
     @_.uniqueCount = 0
     @_.strings = []
-    if xmlobj
+    if xmlobj && xmlobj.sst && xmlobj.sst.si
       @_.count = xmlobj.sst.$.count
       @_.uniqueCount = xmlobj.sst.$.uniqueCount
       for si in xmlobj.sst.si
