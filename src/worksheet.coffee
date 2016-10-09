@@ -160,6 +160,7 @@ class Worksheet
       cols:[]
       sheetData:[]
       mergeCells:[]
+      dataConsolidate:[]
       phoneticPr:[]
       dataValidations:[]
       hyperlinks:[]
