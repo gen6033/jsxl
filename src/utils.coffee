@@ -1,10 +1,10 @@
 module.exports = {
   toRowCol:(addr)->
-    [tmp, col, row] = addr.match(/^\s*([A-Z]+)(\d+)\s*$/)
+    [tmp, col, row] = addr.match(/^\s*\$?([A-Z]+)\$?(\d+)\s*$/)
     [parseInt(row), @toDigit(col)]
 
-  toAddr:(row, col)->
-    @toAlphabet(col)+row
+  toAddr:(row, col, row_abs = false, col_abs = false)->
+    (if col_abs then "$" else "")+@toAlphabet(col)+(if row_abs then "$" else "")+row
 
   toDigit: (alpha)->
     result = 0

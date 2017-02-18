@@ -1,0 +1,147 @@
+%{
+Utils = require ("./utils")
+function isNumber(x){
+  if(typeof(x) != 'number' && typeof(x) != 'string'){
+    return false;
+  }else{
+    return (x == parseFloat(x) && isFinite(x));
+  }
+}
+function checkNumber(x){
+  if(!isNumber(x)){
+    throw new Error("NaN");
+  }
+  return x;
+}
+function isString(obj) {
+  return (typeof (obj) === "string" || obj instanceof String);
+}
+function checkString(x){
+  if(!isString(x)){
+    throw new Error("NaN");
+  }
+  return x;
+}
+
+function yyerror(msg) {
+  console.log(msg);
+}
+
+
+module.exports = function(worksheet, formula){
+
+  var ans;
+%}
+
+
+%token CELL STRING NUMBER IDENT TRUE FALSE
+%token LE GE NEQ
+%token SUM
+
+%nonassoc '<' LE '>' GE '=' NEQ
+%left '+' '-'
+%left '*' '/' '&'
+%left '^'
+
+%%
+
+start: expression {ans = $1;}
+
+expression : constant
+  | binary_operation
+  ;
+constant : FALSE
+  | TRUE
+  | NUMBER
+  | STRING
+  ;
+
+binary_operation : expression '+' expression {$$ = checkNumber($1)+checkNumber($3);}
+  | expression '-' expression {$$ = checkNumber($1)-checkNumber($3);}
+  | expression '*' expression {$$ = checkNumber($1)*checkNumber($3);}
+  | expression '/' expression {$$ = checkNumber($1)/checkNumber($3);}
+  | expression '^' expression {$$ = Math.pow(checkNumber($1), checkNumber($3));}
+  | expression '&' expression {$$ = checkString($1)+checkString($3);}
+  | expression '<' expression {$$ = $1 < $3;}
+  | expression LE expression {$$ = $1 <= $3;}
+  | expression '>' expression {$$ = $1 > $3;}
+  | expression GE expression {$$ = $1 >= $3;}
+  | expression '=' expression {$$ = $1 === $3;}
+  | expression NEQ  expression {$$ = $1 !== $3;}
+  ;
+
+
+%%
+
+  /* Lexical analyzer */
+
+  function yylex()
+  {
+    buffer = buffer.trim();
+    if (buffer.length == 0)
+      return 0;
+
+    //セル参照
+    var m = buffer.match(/^\$?[A-Z]+\$?\d+/);
+    if(m){
+      var row_col = Utils.toRowCol(m[0]);
+      yylval = worksheet.getCell(row_col[0], row_col[1]);
+      buffer = buffer.substr(m[0].length);
+      return CELL;
+    }
+    //数字
+    m = buffer.match(/^\d+(?:\.\d+)?/);
+    if(m){
+      yylval = Number(m[0]);
+      buffer = buffer.substr(m[0].length);
+      return NUMBER;
+    }
+    //文字列
+    m = buffer.match(/^"((?:""|[^"])*)"/);
+    if(m){
+      yylval = m[1].replace(/""/g, '"');
+      buffer = buffer.substr(m[0].length);
+      return STRING;
+    }
+    //IDENT
+    m = buffer.match(/^[A-Z_]+/i);
+    if(m){
+      yylval = m[0].toUpperCase();
+      buffer = buffer.substr(m[0].length);
+      switch(yylval){
+        case "SUM":
+          return SUM;
+        case "TRUE":
+          yylval = true;
+          return TRUE;
+        case "FALSE":
+          yylval = false;
+          return FALSE;
+        default:
+          return IDENT;
+      }
+    }
+    //binary operator
+    m = buffer.match(/^(?:<>|<=|>=)/i);
+    if(m){
+      switch(m[0]){
+        case "<>":
+          return NEQ;
+        case "<=":
+          return NEQ;
+        case ">=":
+          return NEQ;
+      }
+      yylval = buffer.substr(0, 2);
+      buffer = buffer.substr(2);
+    }
+
+    yylval = buffer.substr(0, 1);
+    buffer = buffer.substr(1);
+    return yylval.charCodeAt(0);
+  }
+
+  buffer = formula;
+  yyparse();
+  return ans;
+};
