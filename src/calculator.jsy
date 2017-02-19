@@ -35,12 +35,12 @@ module.exports = function(worksheet, formula){
 %left IGNORE
 %left ','
 %nonassoc '<' LE '>' GE '=' NEQ
+%left '&'
 %left '+' '-'
-%left '*' '/' '&'
+%left '*' '/'
 %left '^'
-%left SPACES
-%left ':'
 %left SIGN
+%left ':' SPACES
 
 %%
 start: expression {ans = $1;}
