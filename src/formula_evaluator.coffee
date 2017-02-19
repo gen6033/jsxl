@@ -127,6 +127,20 @@ class FormulaEvaluator
     @ROUNDDOWN(args)
 
 
+  IF: (args)->
+    @checkArgumentSize(args, 3)
+    [cond, true_expr, false_expr] = args
+    cond = @getValue(cond)
+    if Utils.isNumber(cond)
+      cond = cond == 1
+    else if !Utils.isBoolean(cond)
+      @error(ERROR_VALUE)
+
+    if cond
+      true_expr
+    else
+      false_expr
+
 
 
   error:(err)->
@@ -152,12 +166,16 @@ class FormulaEvaluator
 
   expectNumber:(x)->
     x = @getValue(x)
+    if x == undefined
+      return 0
     unless Utils.isNumber(x)
       @error(ERROR_VALUE)
     Number(x)
 
   expectString:(x)->
     x = @getValue(x)
+    if x == undefined
+      return ""
     unless Utils.isString(x)
       @error(ERROR_VALUE)
     x

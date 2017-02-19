@@ -31,4 +31,8 @@ module.exports = {
       false
     else
       !isNaN(x - parseFloat(x))
+
+  isBoolean: (obj)->
+    typeof (obj) == "boolean" || obj instanceof Boolean
+
 }
