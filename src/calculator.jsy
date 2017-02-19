@@ -124,7 +124,6 @@ function_call: func_sum
   ;
 
 func_sum: SUM '(' expression ')' {
-    (function(){
       var sum = 0;
       var list = [].concat($3);
       for(var i = 0; i < list.length; i++){
@@ -145,7 +144,6 @@ func_sum: SUM '(' expression ')' {
         }
       }
       $$ = sum;
-    })()
     }
   ;
 range: CELL
