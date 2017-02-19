@@ -23,4 +23,12 @@ module.exports = {
       ++i
     result.join("")
 
+  isString: (obj)->
+    typeof (obj) == "string" || obj instanceof String
+
+  isNumber: (x)->
+    if typeof(x) != 'number' && typeof(x) != 'string'
+      false
+    else
+      !isNaN(x - parseFloat(x))
 }
