@@ -22,6 +22,31 @@ class FormulaEvaluator
     sum
 
 
+  ROUND: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    n = Math.floor(@expectNumber(args[1]))
+    digit = Math.pow(10, n)
+    Math.round(expr*digit) / digit
+
+
+  ROUNDUP: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    n = Math.floor(@expectNumber(args[1]))
+    digit = Math.pow(10, n)
+    Math.ceil(expr*digit) / digit
+
+  ROUNDDOWN: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    n = Math.floor(@expectNumber(args[1]))
+    digit = Math.pow(10, n)
+    Math.floor(expr*digit) / digit
+
+
+
+
   getValue:(range)->
     return range unless range instanceof Range
 
