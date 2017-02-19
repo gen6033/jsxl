@@ -437,9 +437,9 @@ function yyparse()
       return STRING;
     }
     //IDENT
-    m = buffer.match(/^[A-Z_]+/i);
+    m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+)/i);
     if(m){
-      yylval = m[0].toUpperCase();
+      yylval = m[1].toUpperCase();
       buffer = buffer.substr(m[0].length);
       return IDENT;
     }
