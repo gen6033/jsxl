@@ -1,6 +1,7 @@
 
-Utils = require ("./utils");
-Range = require ("./range").Range;
+Utils = require("./utils");
+Range = require("./range").Range;
+FormulaEvaluator = require("./formula_evaluator")
 
 function yyerror(msg) {
   console.log(msg);
@@ -20,55 +21,12 @@ module.exports = function(worksheet, formula){
   var yyval;
   var yyp;
 
-  var ans;
   if(formula === undefined){
     return;
   }
+  var ans;
+  var evaluator = new FormulaEvaluator(worksheet);
 
-  function getValue(range){
-    if(range.size == 1){
-      var cell;
-      range.each(function(r, c){
-        cell = worksheet.getCell(r, c);
-      });
-      if(cell.formula){
-        return cell.calculate();
-      }else{
-        return cell.value;
-      }
-    }
-    throw new Error("#!VALUE");
-  }
-  function expectNumber(x){
-    if(x instanceof Range){
-      x = Number(getValue(x));
-    }
-    if(!Utils.isNumber(x)){
-      throw new Error("NaN");
-    }
-    return x;
-  }
-  function expectString(x){
-    if(x instanceof Range){
-      x = getValue(x);
-    }
-    if(!Utils.isString(x)){
-      throw new Error("NaN");
-    }
-    return x;
-  }
-  function expectRange(x){
-    if(!(x instanceof Range)){
-      throw new Error("#!VALUE");
-    }
-    return x;
-  }
-  function expectList(x){
-    if(!Array.isArray(x)){
-      throw new Error("#!VALUE");
-    }
-    return x;
-  }
 
 /* Prototype file of JavaScript parser.
  * Written by MORI Koichiro
@@ -86,13 +44,12 @@ var NUMBER = 259;
 var IDENT = 260;
 var TRUE = 261;
 var FALSE = 262;
-var SUM = 263;
-var IGNORE = 264;
-var LE = 265;
-var GE = 266;
-var NEQ = 267;
-var SPACES = 268;
-var SIGN = 269;
+var IGNORE = 263;
+var LE = 264;
+var GE = 265;
+var NEQ = 266;
+var SPACES = 267;
+var SIGN = 268;
 
   
 /*
@@ -168,20 +125,20 @@ var yytranslate = [
      25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
      25,   25,   25,   25,   25,   25,   25,   25,   25,   25,
      25,   25,   25,   25,   25,   25,    1,    2,    3,    4,
-     25,    5,    6,    7,   25,   10,   12,   14,   21,   25
+      5,    6,    7,   25,   10,   12,   14,   21,   25
   ];
 
 var YYBADCH = 25;
-var YYMAXLEX = 270;
+var YYMAXLEX = 269;
 var YYTERMS = 25;
-var YYNONTERMS = 10;
+var YYNONTERMS = 9;
 
 var yyaction = [
      13,   14,   15,   16,   17,   18,   19,   20,   21,   22,
-     23,   24,   27,   26,   69,   54,   53,   52,   51,   37,
+     23,   24,   27,   26,   68,   54,   53,   37,   52,   51,
   -32767,-32767,-32767,-32767,-32767,-32767,   12,   10,   11,    0,
-     21,   22,   23,   24,   24,   34,   27,   26,   73,   25,
-  -32766,    0,    0,   35,    0,   48,   68
+     21,   22,   23,   24,   24,   34,   27,   26,   72,   25,
+  -32766,    0,    0,   35,    0,   48,   67
   ];
 
 var YYLAST = 47;
@@ -209,18 +166,18 @@ var yybase = [
 var YY2TBLSTATE = 41;
 
 var yydefault = [
-     33,   33,   31,   20,   21,   22,   23,   24,   25,32767,
+     32,   32,   30,   20,   21,   22,   23,   24,   25,32767,
   32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-  32767,32767,32767,32767,32767,   32,32767,32767,   14,   15,
-     16,   17,   19,   18,   33,   33,32767,32767,32767,32767,
-     30
+  32767,32767,32767,32767,32767,   31,32767,32767,   14,   15,
+     16,   17,   19,   18,   32,   32,32767,32767,32767,32767,
+     29
   ];
 
 
 
 var yygoto = [
       1,   49,   50,    2,    3,    4,    5,    6,    7,    8,
-     28,   29,   30,   31,   32,   33,   43,   70,   38,   39
+     28,   29,   30,   31,   32,   33,   43,   69,   38,   39
   ];
 
 var YYGLAST = 20;
@@ -231,28 +188,28 @@ var yygcheck = [
   ];
 
 var yygbase = [
-      0,    0,  -16,   15,   -9,    0,    0,    0,    0,    0
+      0,    0,  -16,   15,   -9,    0,    0,    0,    0
   ];
 
 var yygdefault = [
-  -32768,   36,   42,    9,   40,   44,   45,   46,   47,   67
+  -32768,   36,   42,    9,   40,   44,   45,   46,   47
   ];
 
 var yylhs = [
       0,    1,    2,    4,    4,    4,    4,    4,    4,    4,
       5,    5,    5,    5,    8,    8,    8,    8,    8,    8,
-      8,    8,    8,    8,    8,    8,    7,    9,    6,    6,
-      6,    6,    3,    3
+      8,    8,    8,    8,    8,    8,    7,    6,    6,    6,
+      6,    3,    3
   ];
 
 var yylen = [
       1,    1,    3,    1,    1,    1,    1,    3,    2,    2,
       1,    1,    1,    1,    3,    3,    3,    3,    3,    3,
-      3,    3,    3,    3,    3,    3,    1,    4,    1,    3,
-      3,    3,    1,    0
+      3,    3,    3,    3,    3,    3,    4,    1,    3,    3,
+      3,    1,    0
   ];
 
-var YYSTATES = 59;
+var YYSTATES = 58;
 var YYNLSTATES = 41;
 var YYINTERRTOK = 1;
 var YYUNEXPECTED = 32767;
@@ -336,21 +293,21 @@ function yyparse()
         case 7:
 {yyval=yyastk[yysp-(3-2)];} break;
         case 8:
-{yyval=expectNumber(yyastk[yysp-(2-2)]);} break;
+{yyval=evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
         case 9:
-{yyval=-expectNumber(yyastk[yysp-(2-2)]);} break;
+{yyval=-evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
         case 14:
-{yyval = expectNumber(yyastk[yysp-(3-1)])+expectNumber(yyastk[yysp-(3-3)]);} break;
+{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])+evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
         case 15:
-{yyval = expectNumber(yyastk[yysp-(3-1)])-expectNumber(yyastk[yysp-(3-3)]);} break;
+{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])-evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
         case 16:
-{yyval = expectNumber(yyastk[yysp-(3-1)])*expectNumber(yyastk[yysp-(3-3)]);} break;
+{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])*evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
         case 17:
-{yyval = expectNumber(yyastk[yysp-(3-1)])/expectNumber(yyastk[yysp-(3-3)]);} break;
+{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])/evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
         case 18:
-{yyval = Math.pow(expectNumber(yyastk[yysp-(3-1)]), expectNumber(yyastk[yysp-(3-3)]));} break;
+{yyval = Math.pow(evaluator.expectNumber(yyastk[yysp-(3-1)]), evaluator.expectNumber(yyastk[yysp-(3-3)]));} break;
         case 19:
-{yyval = expectString(yyastk[yysp-(3-1)])+expectString(yyastk[yysp-(3-3)]);} break;
+{yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
         case 20:
 {yyval = yyastk[yysp-(3-1)] < yyastk[yysp-(3-3)];} break;
         case 21:
@@ -363,36 +320,15 @@ function yyparse()
 {yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];} break;
         case 25:
 {yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
-        case 27:
+        case 26:
 {
-    (function(){
-      var sum = 0;
-      var list = [].concat(yyastk[yysp-(4-3)]);
-      for(var i = 0; i < list.length; i++){
-        var expr = list[i];
-        if(expr instanceof Range){
-          expr.each(function(r, c){
-            var cell = worksheet.getCell(r, c);
-            var val = cell.value;
-            if(cell.formula){
-              val = expectNumber(cell.calculate());
-            }
-            if(Utils.isNumber(val)){
-              sum += Number(val);
-            }
-          })
-        }else{
-          sum += expectNumber(expr);
-        }
-      }
-      yyval = sum;
-    })()
+      yyval = evaluator[yyastk[yysp-(4-1)]](yyastk[yysp-(4-3)]);
     } break;
-        case 29:
+        case 28:
 {yyval = yyastk[yysp-(3-1)].union(yyastk[yysp-(3-3)]).unify();} break;
-        case 30:
+        case 29:
 {yyval = yyastk[yysp-(3-1)].intersection(yyastk[yysp-(3-3)]);} break;
-        case 31:
+        case 30:
 {
       if(yyastk[yysp-(3-1)] instanceof Range && yyastk[yysp-(3-3)] instanceof Range){
         yyval = yyastk[yysp-(3-1)].union(yyastk[yysp-(3-3)]);
@@ -498,18 +434,7 @@ function yyparse()
     if(m){
       yylval = m[0].toUpperCase();
       buffer = buffer.substr(m[0].length);
-      switch(yylval){
-        case "TRUE":
-          yylval = true;
-          return TRUE;
-        case "FALSE":
-          yylval = false;
-          return FALSE;
-        case "SUM":
-          return SUM;
-        default:
-          return IDENT;
-      }
+      return IDENT;
     }
     //binary operator
     m = buffer.match(/^\s*(=|<>|<=|>=|<|>|\+|-|\*|\/|\^|&|,|:)\s*/i);
