@@ -30,7 +30,7 @@ module.exports = function(worksheet, formula){
 %}
 
 
-%token CELL STRING NUMBER IDENT TRUE FALSE
+%token CELL STRING NUMBER FUNC TRUE FALSE
 
 %left IGNORE
 %left ','
@@ -93,7 +93,7 @@ binary_operation : term '+' term {$$ = evaluator.expectNumber($1)+evaluator.expe
     }
   ;
 
-function_call: IDENT '(' expression ')' {
+function_call: FUNC '(' expression ')' {
       $$ = evaluator[$1]([].concat($3));
     }
   ;
@@ -118,6 +118,14 @@ spaces: SPACES %prec IGNORE
 
     var m;
 
+    //FUNC
+    m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+[A-Z0-9_.]*)(?=\()/i);
+    if(m){
+      yylval = m[1].toUpperCase();
+      buffer = buffer.substr(m[0].length);
+      return FUNC;
+    }
+
     //セル参照
     m = buffer.match(/^\$?[A-Z]+\$?\d+/);
     if(m){
@@ -139,15 +147,8 @@ spaces: SPACES %prec IGNORE
       buffer = buffer.substr(m[0].length);
       return STRING;
     }
-    //IDENT
-    m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+)/i);
-    if(m){
-      yylval = m[1].toUpperCase();
-      buffer = buffer.substr(m[0].length);
-      return IDENT;
-    }
     //binary operator
-    m = buffer.match(/^\s*(=|<>|<=|>=|<|>|\+|-|\*|\/|\^|&|,|:)\s*/i);
+    m = buffer.match(/^\s*(=|<>|<=|>=|<|>|\+|-|\*|\/|\^|&|,|:|;)\s*/i);
     if(m){
       yylval = m[1];
       buffer = buffer.substr(m[0].length);
