@@ -95,6 +95,38 @@ class FormulaEvaluator
       res = "0".repeat(len - res.length) + res
     res
 
+  CEILING: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    digit = @expectNumber(args[1])
+    if digit == 0
+      return 0
+    if expr >= 0 && digit < 0
+      @error(ERROR_NUM)
+    Math.ceil(expr/digit) * digit
+
+  "CEILING.PRECISE": (args)->
+    @checkArgumentSize(args, 1, 2)
+    if args.length == 1
+      args.push 1
+    args[1] = Math.abs(@expectNumber(args[1]))
+    @CEILING(args)
+
+
+  "CEILING.MATH": (args)->
+    @checkArgumentSize(args, 1, 3)
+    if args.length == 1
+      args.push 1
+    expr = @expectNumber(args[0])
+    digit = Math.abs(@expectNumber(args[1]))
+    sign = 1
+    if digit == 0
+      return 0
+    if args.length == 3
+      sign = Math.sign(expr)
+      expr = Math.abs(expr)
+    sign * @CEILING([expr, digit])
+
   COMBIN: (args)->
     @checkArgumentSize(args, 2)
     @PERMUT(args) / @FACT([args[1]])
@@ -172,136 +204,6 @@ class FormulaEvaluator
         x * fact2(x-2)
     fact2(n)
 
-  GCD: (args)->
-    @checkArgumentSize(args, 1, Number.MAX_VALUE)
-    args = @expandRange(TYPE_INTEGER, args)
-    g = args[0]
-    for i in [1...args.length]
-      n = args[i]
-      if n < 0
-        @error(ERROR_NUM)
-      g = @__gcd__(n, g)
-    g
-
-  INT: (args)->
-    @checkArgumentSize(args, 1)
-    args.push 1
-    @FLOOR(args)
-
-  ODD: (args)->
-    @checkArgumentSize(args, 1)
-    num = @expectNumber(args[0])
-    if num >= 0
-      @EVEN([num+1])-1
-    else
-      @EVEN([num-1])+1
-
-  "ISO.CEILING":@::["CEILING.PRECISE"]
-
-  LCM: (args)->
-    @checkArgumentSize(args, 1, Number.MAX_VALUE)
-    args = @expandRange(TYPE_INTEGER, args)
-    l = args[0]
-    for i in [1...args.length]
-      n = args[i]
-      if n < 0
-        @error(ERROR_NUM)
-      g = @__gcd__(n, l)
-      l *= n
-      l /= g
-    l
-
-  PERMUT: (args)->
-    @checkArgumentSize(args, 2)
-    n = @expectInteger(args[0])
-    r = @expectInteger(args[1])
-    if n <= 0 || r < 0 || n < r
-      @error(ERROR_NUM)
-
-    f = (nn, rr)->
-      if rr == 0
-        1
-      else
-        nn * f(nn-1, rr-1)
-    f(n, r)
-
-  PERMUTATIONA: (args)->
-    @checkArgumentSize(args, 2)
-    n = @expectInteger(args[0])
-    r = @expectInteger(args[1])
-    Math.pow(n, r)
-
-
-  SUM: (args)->
-    @checkArgumentSize(args, 1, Number.MAX_VALUE)
-    args = @expandRange(TYPE_NUMBER, args)
-    sum = 0
-    for num in args
-      sum += num
-    sum
-
-
-  ROUND: (args)->
-    @checkArgumentSize(args, 2)
-    expr = @expectNumber(args[0])
-    sign = Math.sign(expr)
-    expr = Math.abs(expr)
-    n = Math.floor(@expectNumber(args[1]))
-    digit = Math.pow(10, n)
-    sign * Math.round(expr*digit) / digit
-
-
-  ROUNDUP: (args)->
-    @checkArgumentSize(args, 2)
-    expr = @expectNumber(args[0])
-    sign = Math.sign(expr)
-    expr = Math.abs(expr)
-    n = Math.floor(@expectNumber(args[1]))
-    digit = Math.pow(10, n)
-    sign * @CEILING([expr, digit])
-
-  ROUNDDOWN: (args)->
-    @checkArgumentSize(args, 2)
-    expr = @expectNumber(args[0])
-    sign = Math.sign(expr)
-    expr = Math.abs(expr)
-    n = Math.floor(@expectNumber(args[1]))
-    digit = Math.pow(10, n)
-    sign * @FLOOR([expr, digit])
-
-  CEILING: (args)->
-    @checkArgumentSize(args, 2)
-    expr = @expectNumber(args[0])
-    digit = @expectNumber(args[1])
-    if digit == 0
-      return 0
-    if expr >= 0 && digit < 0
-      @error(ERROR_NUM)
-    Math.ceil(expr/digit) * digit
-
-  "CEILING.PRECISE": (args)->
-    @checkArgumentSize(args, 1, 2)
-    if args.length == 1
-      args.push 1
-    args[1] = Math.abs(@expectNumber(args[1]))
-    @CEILING(args)
-
-
-  "CEILING.MATH": (args)->
-    @checkArgumentSize(args, 1, 3)
-    if args.length == 1
-      args.push 1
-    expr = @expectNumber(args[0])
-    digit = Math.abs(@expectNumber(args[1]))
-    sign = 1
-    if digit == 0
-      return 0
-    if args.length == 3
-      sign = Math.sign(expr)
-      expr = Math.abs(expr)
-    sign * @CEILING([expr, digit])
-
-
 
   FLOOR: (args)->
     @checkArgumentSize(args, 2)
@@ -338,13 +240,16 @@ class FormulaEvaluator
     sign * @FLOOR([expr, digit])
 
 
-  TRUNC: (args)->
-    @checkArgumentSize(args, 1, 2)
-    if args.length == 1
-      args.push 0
-
-    @ROUNDDOWN(args)
-
+  GCD: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_INTEGER, args)
+    g = args[0]
+    for i in [1...args.length]
+      n = args[i]
+      if n < 0
+        @error(ERROR_NUM)
+      g = @__gcd__(n, g)
+    g
 
   IF: (args)->
     @checkArgumentSize(args, 3)
@@ -360,6 +265,113 @@ class FormulaEvaluator
     else
       false_expr
 
+  INT: (args)->
+    @checkArgumentSize(args, 1)
+    args.push 1
+    @FLOOR(args)
+
+  "ISO.CEILING":@::["CEILING.PRECISE"]
+
+  LCM: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_INTEGER, args)
+    l = args[0]
+    for i in [1...args.length]
+      n = args[i]
+      if n < 0
+        @error(ERROR_NUM)
+      g = @__gcd__(n, l)
+      l *= n
+      l /= g
+    l
+
+  LN: (args)->
+    @checkArgumentSize(args, 1)
+    Math.log @expectNumber(args[0])
+
+  LOG: (args)->
+    @checkArgumentSize(args, 1, 2)
+    if args.length == 1
+      args.push 10
+    Math.log(@expectNumber(args[0])) / Math.log(@expectNumber(args[1]))
+
+  LOG10: (args)->
+    @checkArgumentSize(args, 1)
+    Math.log10 @expectNumber(args[0])
+
+  ODD: (args)->
+    @checkArgumentSize(args, 1)
+    num = @expectNumber(args[0])
+    if num >= 0
+      @EVEN([num+1])-1
+    else
+      @EVEN([num-1])+1
+
+  PERMUT: (args)->
+    @checkArgumentSize(args, 2)
+    n = @expectInteger(args[0])
+    r = @expectInteger(args[1])
+    if n <= 0 || r < 0 || n < r
+      @error(ERROR_NUM)
+
+    f = (nn, rr)->
+      if rr == 0
+        1
+      else
+        nn * f(nn-1, rr-1)
+    f(n, r)
+
+  PERMUTATIONA: (args)->
+    @checkArgumentSize(args, 2)
+    n = @expectInteger(args[0])
+    r = @expectInteger(args[1])
+    Math.pow(n, r)
+
+
+  ROUND: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    sign = Math.sign(expr)
+    expr = Math.abs(expr)
+    n = Math.floor(@expectNumber(args[1]))
+    digit = Math.pow(10, n)
+    sign * Math.round(expr*digit) / digit
+
+
+  ROUNDUP: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    sign = Math.sign(expr)
+    expr = Math.abs(expr)
+    n = Math.floor(@expectNumber(args[1]))
+    digit = Math.pow(10, n)
+    sign * @CEILING([expr, digit])
+
+  ROUNDDOWN: (args)->
+    @checkArgumentSize(args, 2)
+    expr = @expectNumber(args[0])
+    sign = Math.sign(expr)
+    expr = Math.abs(expr)
+    n = Math.floor(@expectNumber(args[1]))
+    digit = Math.pow(10, n)
+    sign * @FLOOR([expr, digit])
+
+
+  SUM: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_NUMBER, args)
+    sum = 0
+    for num in args
+      sum += num
+    sum
+
+
+  TRUNC: (args)->
+    @checkArgumentSize(args, 1, 2)
+    if args.length == 1
+      args.push 0
+
+    @ROUNDDOWN(args)
 
 
   error:(err)->
