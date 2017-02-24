@@ -67,6 +67,7 @@ term : constant
     }
   | '+' term %prec SIGN {$$=evaluator.expectNumber($2);}
   | '-' term %prec SIGN {$$=-evaluator.expectNumber($2);}
+  | array
   ;
 constant : FALSE
   | TRUE
@@ -101,6 +102,19 @@ function_call: FUNC '(' expression ')' {
 range: CELL
   | term ':' term {$$ = $1.union($3).unify();}
   | term SPACES term {$$ = $1.intersection($3);}
+  ;
+
+array: '{' array_rows '}' {$$ = $2;}
+  | '{' '}' {$$ = [];}
+  ;
+
+array_rows: array_rows ';' array_row {$1.push($3);$$ = $1;}
+  | array_row {$$ = [$1];}
+  ;
+
+array_row: expression {
+    $$ = [].concat($1);
+  }
   ;
 
 spaces: SPACES %prec IGNORE
