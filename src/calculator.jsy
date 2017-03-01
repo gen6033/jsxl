@@ -1,0 +1,197 @@
+%{
+Utils = require("./utils");
+Range = require("./range").Range;
+FormulaEvaluator = require("./formula_evaluator")
+
+function yyerror(msg) {
+  console.log(msg);
+}
+
+
+module.exports = function(worksheet, formula){
+
+  //グローバル汚染対策
+  "use strict";
+  var yystate;
+  var yychar;
+  var yysp;
+  var yyerrflag;
+  var yyn;
+  var yyl;
+  var yyval;
+  var yyp;
+
+  if(formula === undefined){
+    return;
+  }
+  var ans;
+  var evaluator = new FormulaEvaluator(worksheet);
+
+%}
+
+
+%token CELL STRING NUMBER FUNC TRUE FALSE
+
+%left IGNORE
+%left ','
+%nonassoc '<' LE '>' GE '=' NEQ
+%left '&'
+%left '+' '-'
+%left '*' '/'
+%left '^'
+%left SIGN
+%left ':' SPACES
+
+%%
+start: expression {ans = $1;}
+  ;
+
+expression: spaces term spaces {$$=$2;}
+  ;
+
+term : constant
+  | range
+  | function_call
+  | binary_operation
+  | '(' expression ')' {
+      var expr = $2;
+      if(Array.isArray(expr)){
+        var r = expr[0];
+        for(var i = 1; i < expr.length; i++){
+          r.union(expr[i]);
+        }
+        $$ = r;
+      }else{
+        $$ = expr;
+      }
+    }
+  | '+' term %prec SIGN {$$=evaluator.expectNumber($2);}
+  | '-' term %prec SIGN {$$=-evaluator.expectNumber($2);}
+  | array
+  ;
+constant : FALSE
+  | TRUE
+  | NUMBER
+  | STRING
+  ;
+
+binary_operation : term '+' term {$$ = evaluator.expectNumber($1)+evaluator.expectNumber($3);}
+  | term '-' term {$$ = evaluator.expectNumber($1)-evaluator.expectNumber($3);}
+  | term '*' term {$$ = evaluator.expectNumber($1)*evaluator.expectNumber($3);}
+  | term '/' term {$$ = evaluator.expectNumber($1)/evaluator.expectNumber($3);}
+  | term '^' term {$$ = Math.pow(evaluator.expectNumber($1), evaluator.expectNumber($3));}
+  | term '&' term {$$ = evaluator.expectString($1)+evaluator.expectString($3);}
+  | term '<' term {$$ = $1 < $3;}
+  | term LE term {$$ = $1 <= $3;}
+  | term '>' term {$$ = $1 > $3;}
+  | term GE term {$$ = $1 >= $3;}
+  | term '=' term {$$ = $1 === $3;}
+  | term NEQ  term {$$ = $1 !== $3;}
+  | term ',' term {
+      var list = [].concat($1)
+      list.push($3);
+      $$ = list;
+    }
+  ;
+
+function_call: FUNC '(' expression ')' {
+      $$ = evaluator[$1]([].concat($3));
+    }
+  ;
+
+range: CELL
+  | term ':' term {$$ = $1.union($3).unify();}
+  | term SPACES term {$$ = $1.intersection($3);}
+  ;
+
+array: '{' array_rows '}' {$$ = $2;}
+  | '{' '}' {$$ = [];}
+  ;
+
+array_rows: array_rows ';' array_row {$1.push($3);$$ = $1;}
+  | array_row {$$ = [$1];}
+  ;
+
+array_row: expression {
+    $$ = [].concat($1);
+  }
+  ;
+
+spaces: SPACES %prec IGNORE
+  | %prec IGNORE
+  ;
+%%
+
+  /* Lexical analyzer */
+
+
+  function yylex()
+  {
+    if (buffer.length == 0)
+      return 0;
+
+    var m;
+
+    //FUNC
+    m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+[A-Z0-9_.]*)(?=\()/i);
+    if(m){
+      yylval = m[1].toUpperCase();
+      buffer = buffer.substr(m[0].length);
+      return FUNC;
+    }
+
+    //セル参照
+    m = buffer.match(/^\$?[A-Z]+\$?\d+/);
+    if(m){
+      yylval = new Range(m[0]);
+      buffer = buffer.substr(m[0].length);
+      return CELL;
+    }
+    //数字
+    m = buffer.match(/^\d+(?:\.\d+)?/);
+    if(m){
+      yylval = Number(m[0]);
+      buffer = buffer.substr(m[0].length);
+      return NUMBER;
+    }
+    //文字列
+    m = buffer.match(/^"((?:""|[^"])*)"/);
+    if(m){
+      yylval = m[1].replace(/""/g, '"');
+      buffer = buffer.substr(m[0].length);
+      return STRING;
+    }
+    //binary operator
+    m = buffer.match(/^\s*(=|<>|<=|>=|<|>|\+|-|\*|\/|\^|&|,|:|;)\s*/i);
+    if(m){
+      yylval = m[1];
+      buffer = buffer.substr(m[0].length);
+      switch(m[1]){
+        case "<>":
+          return NEQ;
+        case "<=":
+          return NEQ;
+        case ">=":
+          return NEQ;
+        default:
+          return yylval.charCodeAt(0);
+      }
+    }
+
+    //スペースの連続
+    m = buffer.match(/^\s+/);
+    if(m){
+      yylval = m[0];
+      buffer = buffer.substr(m[0].length);
+      return SPACES;
+    }
+
+    yylval = buffer.substr(0, 1);
+    buffer = buffer.substr(1);
+    return yylval.charCodeAt(0);
+  }
+
+  buffer = formula;
+  yyparse();
+  return ans;
+};

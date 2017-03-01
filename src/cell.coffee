@@ -1,6 +1,6 @@
 Utils = require('./utils')
-{Range} = require('./range')
 StyleMixin = require('./style_mixin')
+Calculator = require('./calculator')
 
 class Cell
   StyleMixin.mixin(@prototype)
@@ -27,7 +27,6 @@ class Cell
       @_.formula = @_.formula._
       if attr.t == "shared"
         if @_.formula
-          range = new Range(attr.ref)
           @worksheet._.sft = {} unless @worksheet._.sft
           @worksheet._.sft[attr.si] = [@_.formula, @rowIndex, @colIndex]
         else
@@ -39,10 +38,10 @@ class Cell
             rr = @rowIndex
             cc = @colIndex
             unless m2
-              cc -= colIdx - c
+              c -= colIdx - cc
             unless m4
-              rr -= rowIdx - r
-            return Utils.toAddr(rr, cc)
+              r -= rowIdx - rr
+            return Utils.toAddr(r, c, !!m4, !!m2)
 
   Object.defineProperties @prototype,
     "workbook":
@@ -96,6 +95,9 @@ class Cell
         s = @_.style.clone()
         @_.style = s
         s
+
+  calculate: ->
+    Calculator(@worksheet, @formula)
 
   toXmlObj: ->
 
