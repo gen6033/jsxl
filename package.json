@@ -8,20 +8,20 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-		"postinstall": "coffee -bco lib/ src/"
+    "postinstall": "coffee -bco lib/ src/"
   },
   "keywords": ["jsxl", "xlsx", "excel", "office", "spreadsheet", "workbook", "worksheet"],
   "author": "Genki Sakanashi",
   "license": "MIT",
-	"dependencies":{
-		"bluebird": "*",
-		"coffee-script": "*",
-		"xml2js": "*",
-		"node-zip":"*",
-		"extend":"*",
-		"js-object-clone":"*"
-	},
+  "dependencies":{
+    "bluebird": "*",
+    "coffee-script": "*",
+    "xml2js": "*",
+    "node-zip":"*",
+    "extend":"*",
+    "js-object-clone":"*"
+  },
   "main": "./lib/workbook.js",
-	"devDependencies":{
-	}
+  "devDependencies":{
+  }
 }
