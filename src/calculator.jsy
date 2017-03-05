@@ -94,11 +94,14 @@ binary_operation : term '+' term {$$ = evaluator.expectNumber($1)+evaluator.expe
     }
   ;
 
-function_call: FUNC '(' expression ')' {
+function_call: FUNC '(' function_args ')' {
       $$ = evaluator[$1]([].concat($3));
     }
   ;
 
+function_args: expression
+  | {$$ = []}
+  ;
 range: CELL
   | term ':' term {$$ = $1.union($3).unify();}
   | term SPACES term {$$ = $1.intersection($3);}
