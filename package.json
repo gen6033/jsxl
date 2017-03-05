@@ -19,7 +19,8 @@
     "xml2js": "*",
     "node-zip":"*",
     "extend":"*",
-    "js-object-clone":"*"
+    "js-object-clone":"*",
+    "mathjs":"*"
   },
   "main": "./lib/workbook.js",
   "devDependencies":{

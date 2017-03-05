@@ -1,4 +1,5 @@
 Utils = require("./utils")
+math = require("mathjs")
 
 ERROR_DIV0 = "#DIV/0!"
 ERROR_NA = "#N/A!"
@@ -129,13 +130,13 @@ class FormulaEvaluator
 
   COMBIN: (args)->
     @checkArgumentSize(args, 2)
-    @PERMUT(args) / @FACT([args[1]])
+    math.combinations(@expectInteger(args[0]), @expectInteger(args[1]))
 
   COMBINA: (args)->
     @checkArgumentSize(args, 2)
     n = @expectInteger(args[0])
     r = @expectInteger(args[1])
-    @COMBIN([n+r-1, r]);
+    math.combinations(n+r-1, r)
 
   COS: (args)->
     @checkArgumentSize(args, 1)
@@ -186,13 +187,7 @@ class FormulaEvaluator
 
   FACT: (args)->
     @checkArgumentSize(args, 1)
-    n = @expectInteger(args[0])
-    fact = (x)->
-      if x <= 1
-        1
-      else
-        x * fact(x-1)
-    fact(n)
+    math.factorial(@expectInteger(args[0]))
 
   FACTDOUBLE: (args)->
     @checkArgumentSize(args, 1)
@@ -243,13 +238,7 @@ class FormulaEvaluator
   GCD: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
     args = @expandRange(TYPE_INTEGER, args)
-    g = args[0]
-    for i in [1...args.length]
-      n = args[i]
-      if n < 0
-        @error(ERROR_NUM)
-      g = @__gcd__(n, g)
-    g
+    math.gcd(args...)
 
   IF: (args)->
     @checkArgumentSize(args, 3)
@@ -275,15 +264,7 @@ class FormulaEvaluator
   LCM: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
     args = @expandRange(TYPE_INTEGER, args)
-    l = args[0]
-    for i in [1...args.length]
-      n = args[i]
-      if n < 0
-        @error(ERROR_NUM)
-      g = @__gcd__(n, l)
-      l *= n
-      l /= g
-    l
+    math.lcm(args...)
 
   LN: (args)->
     @checkArgumentSize(args, 1)
@@ -332,12 +313,8 @@ class FormulaEvaluator
     if n <= 0 || r < 0 || n < r
       @error(ERROR_NUM)
 
-    f = (nn, rr)->
-      if rr == 0
-        1
-      else
-        nn * f(nn-1, rr-1)
-    f(n, r)
+    math.permutations(n, r)
+
 
   PERMUTATIONA: (args)->
     @checkArgumentSize(args, 2)
@@ -461,13 +438,5 @@ class FormulaEvaluator
     if min_size <= args.length <= max_size
         return
     throw new Error("Sizes of arguments do not match.")
-
-  __fact__: (n, r)->
-    return x if y == 0
-    @__fact__(y, x % y)
-
-  __gcd__: (x, y)->
-    return x if y == 0
-    @__gcd__(y, x % y)
 
 module.exports = FormulaEvaluator
