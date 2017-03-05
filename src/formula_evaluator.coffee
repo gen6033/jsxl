@@ -299,6 +299,24 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     Math.log10 @expectNumber(args[0])
 
+  MOD: (args)->
+    @checkArgumentSize(args, 2)
+    n = @expectNumber(args[1])
+    if n == 0
+      @error(ERROR_DIV0)
+    Math.sign(n) * Math.abs(@expectNumber(args[0]) % Math.abs(n))
+
+  MROUND: (args)->
+    @checkArgumentSize(args, 2)
+    m = @expectNumber(args[0])
+    n = @expectNumber(args[1])
+    if m == 0 || n == 0
+      return 0
+    if Math.sign(m) != Math.sign(n)
+      @error(ERROR_NUM)
+    Math.round(m/n) * n
+
+
   ODD: (args)->
     @checkArgumentSize(args, 1)
     num = @expectNumber(args[0])
@@ -443,6 +461,10 @@ class FormulaEvaluator
     if min_size <= args.length <= max_size
         return
     throw new Error("Sizes of arguments do not match.")
+
+  __fact__: (n, r)->
+    return x if y == 0
+    @__fact__(y, x % y)
 
   __gcd__: (x, y)->
     return x if y == 0
