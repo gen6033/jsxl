@@ -442,6 +442,22 @@ function yyparse()
 
     var m;
 
+    //TRUE
+    m = buffer.match(/^TRUE/i);
+    if(m){
+      yylval = true
+      buffer = buffer.substr(m[0].length);
+      return TRUE;
+    }
+
+    //FALSE
+    m = buffer.match(/^FALSE/i);
+    if(m){
+      yylval = false
+      buffer = buffer.substr(m[0].length);
+      return FALSE;
+    }
+
     //FUNC
     m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+[A-Z0-9_.]*)(?=\()/i);
     if(m){
