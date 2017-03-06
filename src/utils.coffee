@@ -1,3 +1,5 @@
+BASE_TIME = new Date("1899/12/30") * 1
+
 module.exports = {
   toRowCol:(addr)->
     [tmp, col, row] = addr.match(/^\s*\$?([A-Z]+)\$?(\d+)\s*$/)
@@ -23,6 +25,13 @@ module.exports = {
       ++i
     result.join("")
 
+  offsetToDate: (offset)->
+    new Date(BASE_TIME + (parseFloat(offset)*60*60*24*1000))
+
+  dateToOffset: (date)->
+    (date * 1 - BASE_TIME)/(60*60*24*1000)
+
+
   isString: (obj)->
     typeof (obj) == "string" || obj instanceof String
 
@@ -35,4 +44,21 @@ module.exports = {
   isBoolean: (obj)->
     typeof (obj) == "boolean" || obj instanceof Boolean
 
+  isDate: (obj)->
+    if @isNumber(obj)
+      return false
+    if obj instanceof Date
+      return true
+    if @isString(obj)
+      obj = obj.trim()
+      d1 = Date.parse(obj)
+      d2 = Date.parse(obj.substr(1))
+      if isNaN(d1)
+        return false
+      else
+        # Date.parseは前後に余計な文字が含まれていても受理されるがエクセルでは受理されないため，
+        # 1文字切り取った値と元の値が等しければ余計が文字が含まれているとしてfalseを返す
+        return d1 != d2
+
+    return false
 }

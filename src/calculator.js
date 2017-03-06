@@ -321,15 +321,50 @@ function yyparse()
         case 9:
 {yyval=-evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
         case 15:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])+evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      yyval = evaluator.expectNumber(a) + evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        yyval = Utils.offsetToDate(yyval);
+      }
+    } break;
         case 16:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])-evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+{
+        var a = yyastk[yysp-(3-1)];
+        var b = yyastk[yysp-(3-3)];
+        yyval = evaluator.expectNumber(a) - evaluator.expectNumber(b);
+        if(Utils.isDate(a) || Utils.isDate(b)){
+          yyval = Utils.offsetToDate(yyval);
+        }
+      } break;
         case 17:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])*evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+{
+        var a = yyastk[yysp-(3-1)];
+        var b = yyastk[yysp-(3-3)];
+        yyval = evaluator.expectNumber(a) * evaluator.expectNumber(b);
+        if(Utils.isDate(a) || Utils.isDate(b)){
+          yyval = Utils.offsetToDate(yyval);
+        }
+      } break;
         case 18:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])/evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+{
+        var a = yyastk[yysp-(3-1)];
+        var b = yyastk[yysp-(3-3)];
+        yyval = evaluator.expectNumber(a) / evaluator.expectNumber(b);
+        if(Utils.isDate(a) || Utils.isDate(b)){
+          yyval = Utils.offsetToDate(yyval);
+        }
+      } break;
         case 19:
-{yyval = Math.pow(evaluator.expectNumber(yyastk[yysp-(3-1)]), evaluator.expectNumber(yyastk[yysp-(3-3)]));} break;
+{
+        var a = yyastk[yysp-(3-1)];
+        var b = yyastk[yysp-(3-3)];
+        yyval = Math.pow(evaluator.expectNumber(yyastk[yysp-(3-1)]), evaluator.expectNumber(yyastk[yysp-(3-3)]));
+        if(Utils.isDate(a) || Utils.isDate(b)){
+          yyval = Utils.offsetToDate(yyval);
+        }
+      } break;
         case 20:
 {yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
         case 21:

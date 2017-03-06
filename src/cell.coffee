@@ -5,8 +5,6 @@ Calculator = require('./calculator')
 class Cell
   StyleMixin.mixin(@prototype)
 
-  @BASE_TIME = new Date("1899/12/30") * 1
-
   constructor:(row, colIndex, xmlobj)->
     @_ = {}
     @_.row = row
@@ -60,7 +58,7 @@ class Cell
           when "s"
             val = @workbook._.sst.get(@_.value)
         if @_.styleMixin.style.numberFormat.isDate()
-          val = new Date(Cell.BASE_TIME + (parseFloat(val)*60*60*24*1000))
+          val = Utils.offsetToDate(val)
         val
 
       set: (val) ->
@@ -68,7 +66,7 @@ class Cell
           @_.type = null
         else if val instanceof Date
           @_.type = null
-          val = (val - Cell.BASE_TIME)/(60*60*24*1000)
+          val = Utisl.dateToOffset(val)
         else
           val = @workbook._.sst.add(val)
           @_.type = "s"

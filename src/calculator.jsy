@@ -75,11 +75,46 @@ constant : FALSE
   | STRING
   ;
 
-binary_operation : term '+' term {$$ = evaluator.expectNumber($1)+evaluator.expectNumber($3);}
-  | term '-' term {$$ = evaluator.expectNumber($1)-evaluator.expectNumber($3);}
-  | term '*' term {$$ = evaluator.expectNumber($1)*evaluator.expectNumber($3);}
-  | term '/' term {$$ = evaluator.expectNumber($1)/evaluator.expectNumber($3);}
-  | term '^' term {$$ = Math.pow(evaluator.expectNumber($1), evaluator.expectNumber($3));}
+binary_operation : term '+' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) + evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '-' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) - evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '*' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) * evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '/' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) / evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '^' term {
+      var a = $1;
+      var b = $3;
+      $$ = Math.pow(evaluator.expectNumber($1), evaluator.expectNumber($3));
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
   | term '&' term {$$ = evaluator.expectString($1)+evaluator.expectString($3);}
   | term '<' term {$$ = $1 < $3;}
   | term LE term {$$ = $1 <= $3;}

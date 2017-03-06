@@ -1,3 +1,4 @@
+
 Utils = require("./utils")
 math = require("mathjs")
 
@@ -11,7 +12,6 @@ ERROR_VALUE = "#VALUE!"
 TYPE_NUMBER = 1
 TYPE_INTEGER = 2
 TYPE_STRING = 3
-
 
 
 class FormulaEvaluator
@@ -514,9 +514,11 @@ class FormulaEvaluator
     x = @getValue(x)
     if x == undefined
       return Number(0)
-    unless Utils.isNumber(x)
-      @error(ERROR_VALUE)
-    Number(x)
+    if Utils.isNumber(x)
+      return Number(x)
+    if Utils.isDate(x)
+      return Utils.dateToOffset(Date.parse(x))
+    @error(ERROR_VALUE)
 
   expectInteger:(x)->
     parseInt @expectNumber(x)
