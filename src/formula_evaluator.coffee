@@ -297,6 +297,11 @@ class FormulaEvaluator
       @error(ERROR_NUM)
     Math.round(m/n) * n
 
+  MULTINOMIAL: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_NUMBER, args)
+    math.multinomial args
+
 
   ODD: (args)->
     @checkArgumentSize(args, 1)
@@ -305,6 +310,13 @@ class FormulaEvaluator
       @EVEN([num+1])-1
     else
       @EVEN([num-1])+1
+
+  PI: (args)->
+    Math.PI
+
+  POWER: (args)->
+    @checkArgumentSize(args, 2)
+    Math.pow(@expectNumber(args[0]), @expectNumber(args[1]))
 
   PERMUT: (args)->
     @checkArgumentSize(args, 2)
@@ -322,6 +334,66 @@ class FormulaEvaluator
     r = @expectInteger(args[1])
     Math.pow(n, r)
 
+  QUOTIENT: (args)->
+    @checkArgumentSize(args, 2)
+    parseInt(@expectNumber(args[0]) / @expectNumber(args[1]))
+
+  RADIANS: (args)->
+    @checkArgumentSize(args, 1)
+    @expectNumber(args[0]) * Math.PI / 180
+
+  RAND: (args)->
+    @checkArgumentSize(args, 0)
+    Math.random()
+
+  RANDBETWEEN: (args)->
+    @checkArgumentSize(args, 2)
+    min = @expectInteger(args[0])
+    max = @expectInteger(args[1])
+    Math.floor(Math.random() * (max-min+1)) + min
+
+  ROMAN: (args)->
+    @checkArgumentSize(args, 1, 2)
+    n = @expectInteger(args[0])
+    if n >= 4000
+      @error(ERROR_VALUE)
+    opt = @getValue(args[1])
+    if Utils.isBoolean(opt)
+      if opt
+        opt = 0
+      else
+        opt = 4
+    else
+      opt = @expectInteger(opt)
+
+    codes = {1:'I', 4:'IV', 5:'V', 9:'IX', 10:'X', 40:'XL', 50:'L', 90:'XC', 100:'C', 400:'CD', 500:'D', 900:'CM', 1000:'M'}
+    if opt > 0
+      codes[45] = 'VL'
+      codes[95] = 'VC'
+      codes[450] = 'LD'
+      codes[950] = 'LM'
+    if opt > 1
+      codes[49] = 'IL'
+      codes[99] = 'IC'
+      codes[490] = 'XD'
+      codes[990] = 'XM'
+    if opt > 2
+      codes[495] = 'VD'
+      codes[995] = 'VM'
+    if opt > 3
+      codes[499] = 'ID'
+      codes[999] = 'IM'
+
+    nums = Object.keys(codes).map (x)-> parseInt(x)
+    nums.sort (a, b)-> b - a
+
+    roman = ""
+    for num in nums
+      while n >= num
+        roman += codes[num]
+        n -= num
+
+    roman
 
   ROUND: (args)->
     @checkArgumentSize(args, 2)
@@ -351,6 +423,39 @@ class FormulaEvaluator
     digit = Math.pow(10, n)
     sign * @FLOOR([expr, digit])
 
+  SEC: (args)->
+    @checkArgumentSize(args, 1)
+    1 / Math.cos(@expectNumber(args[0]))
+
+  SECH: (args)->
+    @checkArgumentSize(args, 1)
+    1 / Math.cosh(@expectNumber(args[0]))
+
+  SIGN: (args)->
+    @checkArgumentSize(args, 1)
+    Math.sign @expectNumber(args[0])
+
+  SIN: (args)->
+    @checkArgumentSize(args, 1)
+    Math.sin @expectNumber(args[0])
+
+  SINH: (args)->
+    @checkArgumentSize(args, 1)
+    Math.sinh @expectNumber(args[0])
+
+  SQRT: (args)->
+    @checkArgumentSize(args, 1)
+    n = @expectNumber(args[0])
+    if n < 0
+      @error(ERROR_NUM)
+    Math.sqrt n
+
+  SQRTPI: (args)->
+    @checkArgumentSize(args, 1)
+    n = @expectNumber(args[0])
+    if n < 0
+      @error(ERROR_NUM)
+    Math.sqrt n*Math.PI
 
   SUM: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
@@ -360,6 +465,21 @@ class FormulaEvaluator
       sum += num
     sum
 
+  SUMSQ: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_NUMBER, args)
+    sum = 0
+    for num in args
+      sum += num*num
+    sum
+
+  TAN: (args)->
+    @checkArgumentSize(args, 1)
+    Math.tan @expectNumber(args[0])
+
+  TANH: (args)->
+    @checkArgumentSize(args, 1)
+    Math.tanh @expectNumber(args[0])
 
   TRUNC: (args)->
     @checkArgumentSize(args, 1, 2)
