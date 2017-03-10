@@ -1,6 +1,8 @@
 
 Utils = require("./utils")
 math = require("mathjs")
+moment = require("moment")
+require('moment-weekday-calc')
 
 ERROR_DIV0 = "#DIV/0!"
 ERROR_NA = "#N/A!"
@@ -12,7 +14,11 @@ ERROR_VALUE = "#VALUE!"
 TYPE_NUMBER = 1
 TYPE_INTEGER = 2
 TYPE_STRING = 3
-
+TYPE_DATE = 4
+TYPE_DATE_STRING = 5
+TYPE_BOOLEAN = 6
+TYPE_PURE_NUMBER = 7
+TYPE_PURE_INTEGER = 8
 
 class FormulaEvaluator
 
@@ -162,6 +168,105 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     1/ Math.sinh(@expectNumber(args[0]))
 
+  DATE: (args)->
+    @checkArgumentSize(args, 3)
+    year = @expectInteger(args[0])
+    month = @expectInteger(args[1])
+    day = @expectInteger(args[2])
+    new Date(year, month-1, day)
+
+  DATEDIF: (args)->
+    @checkArgumentSize(args, 3)
+    start = @expectMoment(args[0]).startOf("day")
+    end = @expectMoment(args[1]).startOf("day")
+    unit = @expectString(args[2]).toUpperCase()
+    if start > end
+      @error(ERROR_NUM)
+    switch unit
+      when "Y"
+        end.diff(start, "years")
+      when "M"
+        end.diff(start, "months")
+      when "D"
+        end.diff(start, "days")
+      when "MD"
+        start.year(1)
+        end.year(1)
+        if start.date() > end.date()
+          start.month(end.month()-1)
+        else
+          start.month(end.month())
+        end.diff(start, "days")
+      when "YM"
+        start.year(end.year()-1)
+        end.diff(start, "months") % 12
+      when "YD"
+        end2 = end.clone()
+        end2.year(start.year())
+        if end2 >= start
+          end2.diff(start, "days")
+        else
+          end3 = end.clone()
+          end3.year(start.year() + 1)
+          end3.diff(start, "days")
+
+  DATEVALUE: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectDateString(args[0])
+    Math.floor Utils.dateToOffset(Utils.parseDate(str))
+
+  DAY: (args)->
+    @checkArgumentSize(args, 1)
+    @expectDate(args[0]).getDate()
+
+  DAYS: (args)->
+    @checkArgumentSize(args, 2)
+    end = @expectMoment(args[0])
+    start = @expectMoment(args[1])
+    end.diff(start, "days")
+
+  DAYS360: (args)->
+    @checkArgumentSize(args, 2, 3)
+    if args.length == 2
+      args.push false
+    start = @expectMoment(args[0])
+    end = @expectMoment(args[1])
+    flag = @expectBoolean(args[2])
+
+
+    start_y = start.year()
+    end_y = end.year()
+    start_m = start.month()
+    end_m = end.month()
+    start_d = start.date()
+    end_d = end.date()
+
+    isLastDayOfMonth = (dt)->
+      dt.date() == dt.endOf("month").date()
+
+    if flag
+      start_d = Math.min start_d, 30
+      end_d = Math.min end_d, 30
+    else
+      start_is_last = isLastDayOfMonth(start)
+      end_is_last = isLastDayOfMonth(end)
+      #エクセルのバグで以下の処理は実行されない(NASD準拠ではなくPSA準拠になっている)
+      #if start_is_last && end_is_last && end_m == 1#2月
+      #  end_d = 30
+
+      if start_is_last && start_m == 1 #2月
+        start_d = 30
+      if start_d >= 30 && end_d == 31
+        end_d = 30
+      if start_d == 31
+        start_d = 30
+
+    days = (end_y - start_y) * 360
+    days += (end_m - start_m) * 30
+    days += end_d - start_d
+    days
+
+
   DECIMAL: (args)->
     @checkArgumentSize(args, 2)
     num = @expectString(args[0])
@@ -171,6 +276,18 @@ class FormulaEvaluator
   DEGREES: (args)->
     @checkArgumentSize(args, 1)
     @expectNumber(args[0]) * 180 / Math.PI
+
+  EDATE: (args)->
+    @checkArgumentSize(args, 2)
+    date = @expectMoment(args[0])
+    month = @expectInteger(args[1])
+    date.add(month, "months").startOf("day").toDate()
+
+  EOMONTH: (args)->
+    @checkArgumentSize(args, 2)
+    date = @expectMoment(args[0])
+    month = @expectInteger(args[1])
+    date.add(month, "months").endOf("month").startOf("day").toDate()
 
   EVEN: (args)->
     @checkArgumentSize(args, 1)
@@ -240,6 +357,14 @@ class FormulaEvaluator
     args = @expandRange(TYPE_INTEGER, args)
     math.gcd(args...)
 
+  HOUR: (args)->
+    @checkArgumentSize(args, 1)
+    @expectDate(args[0]).getHours()
+
+  ISOWEEKNUM: (args)->
+    @checkArgumentSize(args, 1)
+    @expectMoment(args[0]).isoWeek()
+
   IF: (args)->
     @checkArgumentSize(args, 3)
     [cond, true_expr, false_expr] = args
@@ -280,12 +405,20 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     Math.log10 @expectNumber(args[0])
 
+  MINUTE: (args)->
+    @checkArgumentSize(args, 1)
+    @expectDate(args[0]).getMinutes()
+
   MOD: (args)->
     @checkArgumentSize(args, 2)
     n = @expectNumber(args[1])
     if n == 0
       @error(ERROR_DIV0)
     Math.sign(n) * Math.abs(@expectNumber(args[0]) % Math.abs(n))
+
+  MONTH: (args)->
+    @checkArgumentSize(args, 1)
+    @expectDate(args[0]).getMonth()+1
 
   MROUND: (args)->
     @checkArgumentSize(args, 2)
@@ -302,6 +435,60 @@ class FormulaEvaluator
     args = @expandRange(TYPE_NUMBER, args)
     math.multinomial args
 
+
+  NETWORKDAYS: (args)->
+    @checkArgumentSize(args, 2, 3)
+    args.splice(2, 0, 1)
+    @["NETWORKDAYS.INTL"](args)
+
+  "NETWORKDAYS.INTL": (args)->
+    @checkArgumentSize(args, 2, 4)
+    d1 = @expectDate(args[0])
+    d2 = @expectDate(args[1])
+
+    sign = Math.sign(d2 - d1)
+    if d1 > d2
+      [d1,d2] = [d2,d1]
+
+    weekdays = [1,2,3,4,5]
+    excludes = []
+    if args.length >= 3
+      weekends = @getValue(args[2])
+      if Utils.isString(weekends)
+        if weekends.length != 7
+          @error(ERROR_VALUE)
+      else if Utils.isNumber(weekends)
+        str = ""
+        n = weekends
+        if 1 <= weekends <= 7
+          n--
+          str = "0000011"
+        else if 11 <= weekends <= 17
+          n -= 11
+          str = "0000001"
+        else
+          @error(ERROR_NUM)
+        weekends = str.substr(-n) + str.slice(0, -n)
+      else
+        @error(ERROR_VALUE)
+      weekdays = []
+      for v,i in weekends.split("")
+        if v == "0"
+          weekdays.push i+1
+        else if v != "1"
+          @error(ERROR_VALUE)
+    if args.length == 4
+      excludes = @expandRange(TYPE_DATE, args[3])
+    sign * moment().isoWeekdayCalc({
+      rangeStart:d1
+      rangeEnd:d2
+      weekdays:weekdays
+      exclusions:excludes
+    })
+
+  NOW: (args)->
+    @checkArgumentSize(args, 0)
+    new Date()
 
   ODD: (args)->
     @checkArgumentSize(args, 1)
@@ -427,6 +614,10 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     1 / Math.cos(@expectNumber(args[0]))
 
+  SECOND: (args)->
+    @checkArgumentSize(args, 1)
+    @expectDate(args[0]).getSeconds()
+
   SECH: (args)->
     @checkArgumentSize(args, 1)
     1 / Math.cosh(@expectNumber(args[0]))
@@ -481,6 +672,31 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     Math.tanh @expectNumber(args[0])
 
+  TIME: (args)->
+    @checkArgumentSize(args, 3)
+    hour = @expectInteger(args[0])
+    minute = @expectInteger(args[1])
+    second = @expectInteger(args[2])
+    dt = moment(Utils.offsetToDate(0))
+    dt.hour(hour)
+    dt.minute(minute)
+    dt.second(second)
+    Utils.dateToOffset(dt)
+
+  TIMEVALUE: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectDateString(args[0])
+    dt = moment(Utils.parseDate(str))
+    dt0 = moment(Utils.offsetToDate(0))
+    dt.year(dt0.year())
+    dt.month(dt0.month())
+    dt.date(dt0.date())
+    Utils.dateToOffset(dt)
+
+  TODAY: (args)->
+    @checkArgumentSize(args, 0)
+    moment().startOf('day').toDate()
+
   TRUNC: (args)->
     @checkArgumentSize(args, 1, 2)
     if args.length == 1
@@ -488,7 +704,133 @@ class FormulaEvaluator
 
     @ROUNDDOWN(args)
 
+  WEEKDAY: (args)->
+    @checkArgumentSize(args, 1, 2)
+    dt = @expectMoment(args[0])
+    weekday = dt.isoWeekday()
+    type = 1
+    if args.length == 2
+      type = @expectInteger(args[1])
+    switch type
+      when 1,17
+        return (weekday % 7) + 1
+      when 2,11
+        return weekday
+      when 3
+        return weekday - 1
 
+    unless 11 <= type <= 17
+      @error(ERROR_NUM)
+
+    weekday = (weekday + 18 - type) % 7
+    if weekday == 0
+      weekday = 7
+    weekday
+
+
+  WEEKNUM: (args)->
+    @checkArgumentSize(args, 1, 2)
+    dt = @expectMoment(args[0])
+    doy = dt.dayOfYear()
+
+    type = 1
+    if args.length == 2
+      type = @expectInteger(args[1])
+      if type == 21
+        return dt.isoWeek()
+
+    switch type
+      when 1
+        type = 17
+      when 2
+        type = 11
+
+    dt0 = dt.clone().startOf("year")
+    offset = dt0.day() #1/1の曜日を取得する
+    doy += (offset - (type - 10 - 7) % 7) % 7
+    Math.ceil(doy / 7)
+
+  "WORKDAY.INTL": (args)->
+    @checkArgumentSize(args, 2, 4)
+    d1 = @expectDate(args[0])
+    workdays = @expectInteger(args[1])
+
+    weekdays = [1,2,3,4,5]
+    excludes = []
+    if args.length >= 3
+      weekends = @getValue(args[2])
+      if Utils.isString(weekends)
+        if weekends.length != 7
+          @error(ERROR_VALUE)
+      else if Utils.isNumber(weekends)
+        str = ""
+        n = weekends
+        if 1 <= weekends <= 7
+          n--
+          str = "0000011"
+        else if 11 <= weekends <= 17
+          n -= 11
+          str = "0000001"
+        else
+          @error(ERROR_NUM)
+        weekends = str.substr(-n) + str.slice(0, -n)
+      else
+        @error(ERROR_VALUE)
+      weekdays = []
+      for v,i in weekends.split("")
+        if v == "0"
+          weekdays.push i+1
+        else if v != "1"
+          @error(ERROR_VALUE)
+    if args.length == 4
+      excludes = @expandRange(TYPE_DATE, args[3])
+
+    moment(d1).isoAddWeekdaysFromSet({
+      'workdays': workdays,
+      'weekdays': weekdays,
+      'exclusions': excludes
+    }).toDate()
+
+
+  WORKDAYS: (args)->
+    @checkArgumentSize(args, 2, 3)
+    args.splice(2, 0, 1)
+    @["WORKDAYS.INTL"](args)
+
+
+  YEAR: (args)->
+    @checkArgumentSize(args, 1)
+    @expectDate(args[0]).getFullYear()
+
+  YEARFRAC: (args)->
+    @checkArgumentSize(args, 2, 3)
+    start = @expectDate(args[0])
+    end = @expectDate(args[1])
+    mode = 0
+    if args.length == 3
+      mode = @expectInteger(args[2])
+
+    if start > end
+      [start, end] = [end, start]
+
+    switch mode
+      when 0
+        @DAYS360([start, end, false]) / 360
+      when 1
+        start_m = moment(start)
+        end_m = moment(end)
+        days_in_year = (end_m.endOf("year").diff(start_m.startOf("year"), "days") + 1) / (end_m.year() - start_m.year() + 1)
+        @DAYS([end, start]) / days_in_year
+      when 2
+        @DAYS([end, start]) / 360
+      when 3
+        @DAYS([end, start]) / 365
+      when 4
+        @DAYS360([start, end, true]) / 360
+      else
+        @error(ERROR_NUM)
+
+        
   error:(err)->
     throw new Error(err)
 
@@ -514,10 +856,10 @@ class FormulaEvaluator
     x = @getValue(x)
     if x == undefined
       return Number(0)
-    if Utils.isNumber(x)
+    if Utils.isNumber(x) || Utils.isBoolean(x)
       return Number(x)
     if Utils.isDate(x)
-      return Utils.dateToOffset(Date.parse(x))
+      return Utils.dateToOffset(Utils.parseDate(x))
     @error(ERROR_VALUE)
 
   expectInteger:(x)->
@@ -527,10 +869,37 @@ class FormulaEvaluator
     x = @getValue(x)
     if x == undefined
       return ""
-    unless Utils.isString(x)
-      @error(ERROR_VALUE)
-    x
+    if Utils.isString(x) || Utils.isNumber(x)
+      return String(x)
+    @error(ERROR_VALUE)
 
+  expectDate:(x)->
+    x = @getValue(x)
+    if Utils.isDate(x)
+      return Utils.parseDate(x)
+    if x == undefined
+      x = 0
+    if Utils.isNumber(x)
+      return Utils.offsetToDate(x)
+    @error(ERROR_VALUE)
+
+  expectMoment:(x)->
+    moment(@expectDate(x))
+
+  expectDateString:(x)->
+    x = @getValue(x)
+    if Utils.isDateString(x)
+      return x
+
+    @error(ERROR_VALUE)
+
+  expectBoolean:(x)->
+    x = @getValue(x)
+    if x == undefined
+      return false
+    unless Utils.isBoolean(x)
+      @error(ERROR_VALUE)
+    !!x
 
   expect:(type, x)->
     switch type
@@ -540,9 +909,20 @@ class FormulaEvaluator
         @expectInteger(x)
       when TYPE_STRING
         @expectString(x)
+      when TYPE_DATE
+        @expectDate(x)
+      when TYPE_DATE_STRING
+        @expectDateString(x)
+      when TYPE_BOOLEAN
+        @expectBoolean(x)
+      when TYPE_PURE_NUMBER
+        @expectPureNumber(x)
+      when TYPE_PURE_INTEGER
+        @expectPureInteger(x)
 
 
   expandRange:(type, args)->
+    args = [].concat(args)
     expanded = []
     for arg in args
       if arg instanceof Range

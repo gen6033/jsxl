@@ -1,4 +1,6 @@
-BASE_TIME = new Date("1899/12/30") * 1
+moment = require("moment")
+require("datejs") #Date.parseを上書きするので注意
+BASE_TIME = moment("1899-12-30") * 1
 
 module.exports = {
   toRowCol:(addr)->
@@ -45,20 +47,19 @@ module.exports = {
     typeof (obj) == "boolean" || obj instanceof Boolean
 
   isDate: (obj)->
-    if @isNumber(obj)
-      return false
-    if obj instanceof Date
-      return true
-    if @isString(obj)
-      obj = obj.trim()
-      d1 = Date.parse(obj)
-      d2 = Date.parse(obj.substr(1))
-      if isNaN(d1)
-        return false
-      else
-        # Date.parseは前後に余計な文字が含まれていても受理されるがエクセルでは受理されないため，
-        # 1文字切り取った値と元の値が等しければ余計が文字が含まれているとしてfalseを返す
-        return d1 != d2
+    !@isNumber(obj) && (obj instanceof Date || @isDateString(obj))
 
+  isDateString: (obj)->
+    if @isString(obj)
+      return Date.parse(obj) != null
     return false
+
+  isISODateString: (obj)->
+    if @isString(obj)
+      return moment(obj, moment.ISO_8601).isValid()
+    return false
+
+  parseDate: (str)->
+    #date.jsにより上書きされたDate.parse
+    Date.parse(str)
 }

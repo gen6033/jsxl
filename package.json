@@ -20,7 +20,10 @@
     "node-zip":"*",
     "extend":"*",
     "js-object-clone":"*",
-    "mathjs":"*"
+    "mathjs":"*",
+    "moment":"*",
+    "moment-weekday-calc":"*",
+    "datejs":"*"
   },
   "main": "./lib/workbook.js",
   "devDependencies":{
