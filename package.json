@@ -23,7 +23,10 @@
     "mathjs":"*",
     "moment":"*",
     "moment-weekday-calc":"*",
-    "datejs":"*"
+    "datejs":"*",
+    "moji":"*",
+    "multibyte-length":"*",
+    "multibyte-substr":"*"
   },
   "main": "./lib/workbook.js",
   "devDependencies":{

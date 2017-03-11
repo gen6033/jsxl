@@ -2,6 +2,9 @@
 Utils = require("./utils")
 math = require("mathjs")
 moment = require("moment")
+moji = require("moji")
+multibyteLength = require('multibyte-length')
+multibyteSubstr = require('multibyte-substr')
 require('moment-weekday-calc')
 
 ERROR_DIV0 = "#DIV/0!"
@@ -73,6 +76,11 @@ class FormulaEvaluator
         sum -= n
     sum
 
+  ASC: (args)->
+    @checkArgumentSize(args, 1)
+    text = @expectString(args[0])
+    moji(text).convert("ZE", "HE").convert("ZS", "HS").convert("ZK", "HK").toString()
+
   ASIN: (args)->
     @checkArgumentSize(args, 1)
     Math.asin @expectNumber(args[0])
@@ -134,6 +142,22 @@ class FormulaEvaluator
       expr = Math.abs(expr)
     sign * @CEILING([expr, digit])
 
+
+  CHAR: (args)->
+    @checkArgumentSize(args, 1)
+    code = @expectInteger(args[0])
+    String.fromCharCode(code)
+
+  CLEAN: (args)->
+    @checkArgumentSize(args, 1)
+    text = @expectString(args[0])
+    text.replace(/[\x00-\x1F\x7F\x81\x8D\x8E\x9D]/g, "")
+
+  CODE: (args)->
+    @checkArgumentSize(args, 1)
+    text = @expectString(args[0])
+    text.charCodeAt(0)
+
   COMBIN: (args)->
     @checkArgumentSize(args, 2)
     math.combinations(@expectInteger(args[0]), @expectInteger(args[1]))
@@ -143,6 +167,16 @@ class FormulaEvaluator
     n = @expectInteger(args[0])
     r = @expectInteger(args[1])
     math.combinations(n+r-1, r)
+
+
+  CONCAT: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_STRING, args)
+    args.join("")
+
+  CONCATENATE: (args)->
+    @CONCAT(args)
+
 
   COS: (args)->
     @checkArgumentSize(args, 1)
@@ -266,6 +300,10 @@ class FormulaEvaluator
     days += end_d - start_d
     days
 
+  DBCS: (args)->
+    @checkArgumentSize(args, 1)
+    text = @expectString(args[0])
+    moji(text).convert("HE", "ZE").convert("HS", "ZS").convert("HK", "ZK").toString()
 
   DECIMAL: (args)->
     @checkArgumentSize(args, 2)
@@ -296,6 +334,11 @@ class FormulaEvaluator
     args.push MODE
     @["CEILING.MATH"](args)
 
+  EXACT: (args)->
+    @checkArgumentSize(args, 2)
+    a = @expectString(args[0])
+    b = @expectString(args[1])
+    a == b
 
   EXP: (args)->
     @checkArgumentSize(args, 1)
@@ -316,6 +359,61 @@ class FormulaEvaluator
         x * fact2(x-2)
     fact2(n)
 
+  FIND: (args)->
+    @checkArgumentSize(args, 2, 3)
+    search = @expectString(args[0])
+    target = @expectString(args[1])
+    start = 1
+    if args.length == 3
+      start = @expectInteger(args[2])
+    start--
+
+    pos = target.substr(start).search(search)
+    if pos == -1
+      @error(ERROR_VALUE)
+    start + pos + 1
+
+  FINDB: (args)->
+    @checkArgumentSize(args, 2, 3)
+    search = @expectString(args[0])
+    target = @expectString(args[1])
+    start = 1
+    if args.length == 3
+      start = @expectInteger(args[2])
+    #検索対象でない部分を切り出す
+    prefix = multibyteSubstr(target, 0 , start)
+    #開始位置に2バイト文字の途中が指定された場合の補正
+    start = multibyteLength(prefix)
+    #検索対象でない部分を取り除く
+    target = target.replace(prefix, "")
+    pos = target.search(search)
+    if pos == -1
+      @error(ERROR_VALUE)
+    s = target.substr(0, pos)
+    start + multibyteLength(s) + 1
+
+  FIXED: (args)->
+    @checkArgumentSize(args, 1, 3)
+    num = @expectNumber(args[0])
+    digit = 2
+    if args.length >= 2
+      digit = @expectInteger(args[1])
+    delim = false
+    if args.length == 3
+      delim = @expectBoolean(args[2])
+
+    num = @ROUND([num, digit])
+    if digit > 0
+      num = num.toFixed(digit)
+    else
+      num = String(num)
+
+    if delim
+      return num
+    else
+      parts = num.split(".")
+      parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      return parts.join(".")
 
   FLOOR: (args)->
     @checkArgumentSize(args, 2)
@@ -385,6 +483,9 @@ class FormulaEvaluator
     @FLOOR(args)
 
   "ISO.CEILING":@::["CEILING.PRECISE"]
+
+  JIS: (args)->
+    @DBCS(args)
 
   LCM: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
@@ -830,7 +931,6 @@ class FormulaEvaluator
       else
         @error(ERROR_NUM)
 
-        
   error:(err)->
     throw new Error(err)
 
@@ -871,6 +971,8 @@ class FormulaEvaluator
       return ""
     if Utils.isString(x) || Utils.isNumber(x)
       return String(x)
+    if Utils.isBoolean(x)
+      return String(x*1)
     @error(ERROR_VALUE)
 
   expectDate:(x)->
