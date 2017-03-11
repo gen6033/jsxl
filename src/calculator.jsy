@@ -46,7 +46,7 @@ module.exports = function(worksheet, formula){
 start: expression {ans = $1;}
   ;
 
-expression: spaces term spaces {$$=$2;}
+expression: spaces term {$$=$2;}
   ;
 
 term : constant
@@ -127,6 +127,7 @@ binary_operation : term '+' term {
       list.push($3);
       $$ = list;
     }
+  | term SPACES
   ;
 
 function_call: FUNC '(' function_args ')' {
@@ -135,7 +136,7 @@ function_call: FUNC '(' function_args ')' {
   ;
 
 function_args: expression
-  | {$$ = []}
+  | spaces {$$ = []}
   ;
 range: CELL
   | term ':' term {$$ = $1.union($3).unify();}
