@@ -376,7 +376,15 @@ function yyparse()
         case 24:
 {yyval = yyastk[yysp-(3-1)] >= yyastk[yysp-(3-3)];} break;
         case 25:
-{yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      if(Utils.isString(a) && Utils.isString(b)){
+        yyval = (String(a).toLowerCase() == String(b).toLowerCase())
+      }else{
+        yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];
+      }
+    } break;
         case 26:
 {yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
         case 27:
