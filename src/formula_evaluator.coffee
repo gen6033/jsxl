@@ -771,6 +771,19 @@ class FormulaEvaluator
       @error(ERROR_VALUE)
     str.repeat(n)
 
+  RIGHT: (args)->
+    @checkArgumentSize(args, 1, 2)
+    str = @expectString(args[0])
+    args[0] = str.split("").reverse().join("")
+    @LEFT(args).split("").reverse().join("")
+
+  RIGHTB: (args)->
+    @checkArgumentSize(args, 1, 2)
+    str = @expectString(args[0])
+    args[0] = str.split("").reverse().join("")
+    @LEFTB(args).split("").reverse().join("")
+
+
   ROMAN: (args)->
     @checkArgumentSize(args, 1, 2)
     n = @expectInteger(args[0])
