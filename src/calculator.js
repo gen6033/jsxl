@@ -99,128 +99,132 @@ function yyflush()
 
 
 var yytranslate = [
-      0,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   15,   28,
-     23,   24,   18,   16,    8,   17,   28,   19,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   21,   27,
-      9,   13,   11,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   20,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   25,   28,   26,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,   28,   28,   28,   28,
-     28,   28,   28,   28,   28,   28,    1,    2,    3,    4,
-      5,    6,    7,   28,   10,   12,   14,   28,   22
+      0,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   20,   15,   29,
+     24,   25,   18,   16,    8,   17,   29,   19,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   22,   28,
+      9,   13,   11,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   21,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   26,   29,   27,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,   29,   29,   29,   29,
+     29,   29,   29,   29,   29,   29,    1,    2,    3,    4,
+      5,    6,    7,   29,   10,   12,   14,   29,   23
   ];
 
-var YYBADCH = 28;
+var YYBADCH = 29;
 var YYMAXLEX = 269;
-var YYTERMS = 28;
-var YYNONTERMS = 12;
+var YYTERMS = 29;
+var YYNONTERMS = 13;
 
 var yyaction = [
-     74,   59,   58,   42,   57,   56,   13,   14,   15,   16,
-     17,   18,   19,    0,   10,   11,   24,-32766,-32766,   77,
-     38,   39,   40,   33,   12,   13,   14,   15,   16,   17,
-     18,   19,   25,   27,   82,   78,    0,    0,   26,-32767,
-  -32767,-32767,-32767,-32767,-32767,   19,   73,   20,   21,   22,
-     23,   24,   25,   27,    0,    0,   52
+     78,   61,   60,   42,   59,   58,   86,   12,   13,   14,
+     15,   16,   17,   18,   19,   13,   14,   15,   16,   17,
+     18,   19,   40,    0,   33,   20,   21,   22,   23,   57,
+     24,   25,   27,-32767,-32767,-32767,-32767,-32767,-32767,   19,
+     38,-32766,-32766,-32766,-32766,-32766,-32766,   10,   11,   25,
+     27,    0,    0,   81,   39,   75,    0,   52,    0,    0,
+     82
   ];
 
-var YYLAST = 57;
+var YYLAST = 61;
 
 var yycheck = [
-      2,    3,    4,    5,    6,    7,    9,   10,   11,   12,
-     13,   14,   15,    0,   16,   17,   20,   16,   17,   26,
-     27,   23,   23,   25,    8,    9,   10,   11,   12,   13,
-     14,   15,   21,   22,   22,   26,   -1,   -1,   22,    9,
-     10,   11,   12,   13,   14,   15,   24,   16,   17,   18,
-     19,   20,   21,   22,   -1,   -1,   24
+      2,    3,    4,    5,    6,    7,   23,    8,    9,   10,
+     11,   12,   13,   14,   15,    9,   10,   11,   12,   13,
+     14,   15,   24,    0,   26,   16,   17,   18,   19,   20,
+     21,   22,   23,    9,   10,   11,   12,   13,   14,   15,
+     24,   16,   17,   18,   19,   16,   17,   16,   17,   22,
+     23,   -1,   -1,   27,   28,   25,   -1,   25,   -1,   -1,
+     27
   ];
 
 var yybase = [
-     12,   16,   -3,   30,   30,   30,   30,   30,   30,   -2,
+    -17,   -1,    6,   24,   24,   24,   24,   24,   24,   31,
+     31,   31,   31,   31,   31,   31,   31,   31,   31,   31,
+     31,   31,   31,   31,   31,   31,   31,   -2,    9,   29,
+     29,   25,   25,   33,   27,   27,   26,   27,  -17,  -17,
+    -17,   23,   16,   32,   30,    0,    9,    9,    9,    9,
+      9,    9,    9,    9,   -2,   -2,   -2,   -2,   -2,   -2,
      -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,
-     -2,   -2,   -2,   -2,   -2,   -2,   -2,   -2,   31,    1,
-      1,   -4,   -4,    9,   11,   11,   -7,   11,   12,   12,
-     12,   13,   -1,   32,   22,    0,   31,   31,   31,   31,
-     31,   31,   31,   31,    0,    0,    0,    0,    0,    0,
-      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-      0,    0,    0,    0,   31,   31,   11,   11,   12
+     -2,   -2,    0,    0,    9,    9,    9,    9,  -17
   ];
 
 var YY2TBLSTATE = 34;
 
 var yydefault = [
-     38,   38,   27,   21,   22,   23,   24,   25,   26,32767,
+     42,    2,   29,   23,   24,   25,   26,   27,   28,32767,
   32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-  32767,32767,32767,32767,32767,32767,   37,32767,   20,   15,
-     16,   17,   18,   38,    8,    9,32767,   19,   38,   38,
-     38,32767,32767,32767,32767
+  32767,32767,32767,32767,32767,32767,   32,   11,   22,   17,
+     18,   19,   20,   42,    8,    9,32767,   21,   42,   42,
+     42,32767,32767,32767,32767
   ];
 
 
 
 var yygoto = [
-      1,   34,   35,    2,    3,    4,    5,    6,    7,    8,
-     28,   29,   30,   31,   32,   37,   75,   46,   79,   47,
+     34,   35,    2,    3,    4,    5,    6,    7,    8,   28,
+     29,   30,   31,   32,   37,   79,   46,   80,   26,    0,
+     83,    0,    0,    0,    0,    0,    0,    0,    0,    0,
       0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
       0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-      0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-      0,    0,    0,    0,    0,    0,   43,   44
+      0,    0,    0,    0,   76,    0,   43
   ];
 
-var YYGLAST = 58;
+var YYGLAST = 57;
 
 var yygcheck = [
       4,    4,    4,    4,    4,    4,    4,    4,    4,    4,
-      4,    4,    4,    4,    4,    4,    4,    2,   11,    3,
+      4,    4,    4,    4,    4,    4,    2,    4,    3,   -1,
+     12,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
      -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
      -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-     -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-     -1,   -1,   -1,   -1,   -1,   -1,    2,    2
+     -1,   -1,   -1,   -1,    2,   -1,    2
   ];
 
 var yygbase = [
-      0,    0,   17,   18,   -9,    0,    0,    0,    0,    0,
-      0,  -20
+      0,    0,   16,  -20,  -10,    0,    0,    0,    0,    0,
+      0,    0,  -19
   ];
 
 var yygdefault = [
-  -32768,   41,   81,    9,   76,   48,   49,   50,   51,   55,
-     36,   80
+  -32768,   41,   85,    9,    1,   48,   49,   50,   51,   55,
+     44,   36,   84
   ];
 
 var yylhs = [
       0,    1,    2,    4,    4,    4,    4,    4,    4,    4,
-      4,    5,    5,    5,    5,    8,    8,    8,    8,    8,
-      8,    8,    8,    8,    8,    8,    8,    8,    7,    6,
-      6,    6,    9,    9,   10,   10,   11,    3,    3
+      4,    4,    4,    5,    5,    5,    5,    8,    8,    8,
+      8,    8,    8,    8,    8,    8,    8,    8,    8,    8,
+      7,   10,   10,    6,    6,    6,    9,    9,   11,   11,
+     12,    3,    3
   ];
 
 var yylen = [
-      1,    1,    3,    1,    1,    1,    1,    3,    2,    2,
-      1,    1,    1,    1,    1,    3,    3,    3,    3,    3,
-      3,    3,    3,    3,    3,    3,    3,    3,    4,    1,
-      3,    3,    3,    2,    3,    1,    1,    1,    0
+      1,    1,    2,    1,    1,    1,    1,    3,    2,    2,
+      1,    2,    2,    1,    1,    1,    1,    3,    3,    3,
+      3,    3,    3,    3,    3,    3,    3,    3,    3,    3,
+      4,    1,    1,    1,    3,    3,    3,    2,    3,    1,
+      1,    1,    0
   ];
 
-var YYSTATES = 67;
+var YYSTATES = 68;
 var YYNLSTATES = 45;
 var YYINTERRTOK = 1;
 var YYUNEXPECTED = 32767;
@@ -300,7 +304,7 @@ function yyparse()
         case 1:
 {ans = yyastk[yysp-(1-1)];} break;
         case 2:
-{yyval=yyastk[yysp-(3-2)];} break;
+{yyval=yyastk[yysp-(2-2)];} break;
         case 7:
 {
       var expr = yyastk[yysp-(3-2)];
@@ -318,53 +322,102 @@ function yyparse()
 {yyval=evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
         case 9:
 {yyval=-evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
-        case 15:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])+evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
-        case 16:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])-evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+        case 12:
+{
+      yyval = evaluator.expectNumber(yyastk[yysp-(2-1)]) / 100
+    } break;
         case 17:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])*evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      yyval = evaluator.expectNumber(a) + evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        yyval = Utils.offsetToDate(yyval);
+      }
+    } break;
         case 18:
-{yyval = evaluator.expectNumber(yyastk[yysp-(3-1)])/evaluator.expectNumber(yyastk[yysp-(3-3)]);} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      yyval = evaluator.expectNumber(a) - evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        yyval = Utils.offsetToDate(yyval);
+      }
+    } break;
         case 19:
-{yyval = Math.pow(evaluator.expectNumber(yyastk[yysp-(3-1)]), evaluator.expectNumber(yyastk[yysp-(3-3)]));} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      yyval = evaluator.expectNumber(a) * evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        yyval = Utils.offsetToDate(yyval);
+      }
+    } break;
         case 20:
-{yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      yyval = evaluator.expectNumber(a) / evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        yyval = Utils.offsetToDate(yyval);
+      }
+    } break;
         case 21:
-{yyval = yyastk[yysp-(3-1)] < yyastk[yysp-(3-3)];} break;
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      yyval = Math.pow(evaluator.expectNumber(yyastk[yysp-(3-1)]), evaluator.expectNumber(yyastk[yysp-(3-3)]));
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        yyval = Utils.offsetToDate(yyval);
+      }
+    } break;
         case 22:
-{yyval = yyastk[yysp-(3-1)] <= yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
         case 23:
-{yyval = yyastk[yysp-(3-1)] > yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] < yyastk[yysp-(3-3)];} break;
         case 24:
-{yyval = yyastk[yysp-(3-1)] >= yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] <= yyastk[yysp-(3-3)];} break;
         case 25:
-{yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] > yyastk[yysp-(3-3)];} break;
         case 26:
-{yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] >= yyastk[yysp-(3-3)];} break;
         case 27:
+{
+      var a = yyastk[yysp-(3-1)];
+      var b = yyastk[yysp-(3-3)];
+      if(Utils.isString(a) && Utils.isString(b)){
+        yyval = (String(a).toLowerCase() == String(b).toLowerCase())
+      }else{
+        yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];
+      }
+    } break;
+        case 28:
+{yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
+        case 29:
 {
       var list = [].concat(yyastk[yysp-(3-1)])
       list.push(yyastk[yysp-(3-3)]);
       yyval = list;
     } break;
-        case 28:
+        case 30:
 {
       yyval = evaluator[yyastk[yysp-(4-1)]]([].concat(yyastk[yysp-(4-3)]));
     } break;
-        case 30:
-{yyval = yyastk[yysp-(3-1)].union(yyastk[yysp-(3-3)]).unify();} break;
-        case 31:
-{yyval = yyastk[yysp-(3-1)].intersection(yyastk[yysp-(3-3)]);} break;
         case 32:
-{yyval = yyastk[yysp-(3-2)];} break;
-        case 33:
-{yyval = [];} break;
+{yyval = []} break;
         case 34:
-{yyastk[yysp-(3-1)].push(yyastk[yysp-(3-3)]);yyval = yyastk[yysp-(3-1)];} break;
+{yyval = yyastk[yysp-(3-1)].union(yyastk[yysp-(3-3)]).unify();} break;
         case 35:
-{yyval = [yyastk[yysp-(1-1)]];} break;
+{yyval = yyastk[yysp-(3-1)].intersection(yyastk[yysp-(3-3)]);} break;
         case 36:
+{yyval = yyastk[yysp-(3-2)];} break;
+        case 37:
+{yyval = [];} break;
+        case 38:
+{yyastk[yysp-(3-1)].push(yyastk[yysp-(3-3)]);yyval = yyastk[yysp-(3-1)];} break;
+        case 39:
+{yyval = [yyastk[yysp-(1-1)]];} break;
+        case 40:
 {
     yyval = [].concat(yyastk[yysp-(1-1)]);
   } break;
@@ -437,6 +490,22 @@ function yyparse()
       return 0;
 
     var m;
+
+    //TRUE
+    m = buffer.match(/^TRUE/i);
+    if(m){
+      yylval = true
+      buffer = buffer.substr(m[0].length);
+      return TRUE;
+    }
+
+    //FALSE
+    m = buffer.match(/^FALSE/i);
+    if(m){
+      yylval = false
+      buffer = buffer.substr(m[0].length);
+      return FALSE;
+    }
 
     //FUNC
     m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+[A-Z0-9_.]*)(?=\()/i);

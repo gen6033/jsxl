@@ -1,3 +1,7 @@
+moment = require("moment")
+require("datejs") #Date.parseを上書きするので注意
+BASE_TIME = moment("1899-12-30") * 1
+
 module.exports = {
   toRowCol:(addr)->
     [tmp, col, row] = addr.match(/^\s*\$?([A-Z]+)\$?(\d+)\s*$/)
@@ -23,6 +27,13 @@ module.exports = {
       ++i
     result.join("")
 
+  offsetToDate: (offset)->
+    new Date(BASE_TIME + (parseFloat(offset)*60*60*24*1000))
+
+  dateToOffset: (date)->
+    (date * 1 - BASE_TIME)/(60*60*24*1000)
+
+
   isString: (obj)->
     typeof (obj) == "string" || obj instanceof String
 
@@ -35,4 +46,20 @@ module.exports = {
   isBoolean: (obj)->
     typeof (obj) == "boolean" || obj instanceof Boolean
 
+  isDate: (obj)->
+    !@isNumber(obj) && (obj instanceof Date || @isDateString(obj))
+
+  isDateString: (obj)->
+    if @isString(obj)
+      return Date.parse(obj) != null
+    return false
+
+  isISODateString: (obj)->
+    if @isString(obj)
+      return moment(obj, moment.ISO_8601).isValid()
+    return false
+
+  parseDate: (str)->
+    #date.jsにより上書きされたDate.parse
+    Date.parse(str)
 }

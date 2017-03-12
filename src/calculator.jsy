@@ -38,6 +38,7 @@ module.exports = function(worksheet, formula){
 %left '&'
 %left '+' '-'
 %left '*' '/'
+%left '%'
 %left '^'
 %left SIGN
 %left ':' SPACES
@@ -46,7 +47,7 @@ module.exports = function(worksheet, formula){
 start: expression {ans = $1;}
   ;
 
-expression: spaces term spaces {$$=$2;}
+expression: spaces term {$$=$2;}
   ;
 
 term : constant
@@ -68,6 +69,10 @@ term : constant
   | '+' term %prec SIGN {$$=evaluator.expectNumber($2);}
   | '-' term %prec SIGN {$$=-evaluator.expectNumber($2);}
   | array
+  | term SPACES
+  | term '%' {
+      $$ = evaluator.expectNumber($1) / 100
+    }
   ;
 constant : FALSE
   | TRUE
@@ -75,17 +80,60 @@ constant : FALSE
   | STRING
   ;
 
-binary_operation : term '+' term {$$ = evaluator.expectNumber($1)+evaluator.expectNumber($3);}
-  | term '-' term {$$ = evaluator.expectNumber($1)-evaluator.expectNumber($3);}
-  | term '*' term {$$ = evaluator.expectNumber($1)*evaluator.expectNumber($3);}
-  | term '/' term {$$ = evaluator.expectNumber($1)/evaluator.expectNumber($3);}
-  | term '^' term {$$ = Math.pow(evaluator.expectNumber($1), evaluator.expectNumber($3));}
+binary_operation : term '+' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) + evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '-' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) - evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '*' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) * evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '/' term {
+      var a = $1;
+      var b = $3;
+      $$ = evaluator.expectNumber(a) / evaluator.expectNumber(b);
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
+  | term '^' term {
+      var a = $1;
+      var b = $3;
+      $$ = Math.pow(evaluator.expectNumber($1), evaluator.expectNumber($3));
+      if(Utils.isDate(a) || Utils.isDate(b)){
+        $$ = Utils.offsetToDate($$);
+      }
+    }
   | term '&' term {$$ = evaluator.expectString($1)+evaluator.expectString($3);}
   | term '<' term {$$ = $1 < $3;}
   | term LE term {$$ = $1 <= $3;}
   | term '>' term {$$ = $1 > $3;}
   | term GE term {$$ = $1 >= $3;}
-  | term '=' term {$$ = $1 === $3;}
+  | term '=' term {
+      var a = $1;
+      var b = $3;
+      if(Utils.isString(a) && Utils.isString(b)){
+        $$ = (String(a).toLowerCase() == String(b).toLowerCase())
+      }else{
+        $$ = $1 === $3;
+      }
+    }
   | term NEQ  term {$$ = $1 !== $3;}
   | term ',' term {
       var list = [].concat($1)
@@ -94,11 +142,14 @@ binary_operation : term '+' term {$$ = evaluator.expectNumber($1)+evaluator.expe
     }
   ;
 
-function_call: FUNC '(' expression ')' {
+function_call: FUNC '(' function_args ')' {
       $$ = evaluator[$1]([].concat($3));
     }
   ;
 
+function_args: expression
+  | spaces {$$ = []}
+  ;
 range: CELL
   | term ':' term {$$ = $1.union($3).unify();}
   | term SPACES term {$$ = $1.intersection($3);}
@@ -131,6 +182,22 @@ spaces: SPACES %prec IGNORE
       return 0;
 
     var m;
+
+    //TRUE
+    m = buffer.match(/^TRUE/i);
+    if(m){
+      yylval = true
+      buffer = buffer.substr(m[0].length);
+      return TRUE;
+    }
+
+    //FALSE
+    m = buffer.match(/^FALSE/i);
+    if(m){
+      yylval = false
+      buffer = buffer.substr(m[0].length);
+      return FALSE;
+    }
 
     //FUNC
     m = buffer.match(/^(?:_xlfn\.)?([A-Z_.]+[A-Z0-9_.]*)(?=\()/i);
