@@ -26,7 +26,8 @@
     "datejs":"*",
     "moji":"*",
     "multibyte-length":"*",
-    "multibyte-substr":"*"
+    "multibyte-substr":"*",
+    "xregexp":"*"
   },
   "main": "./lib/workbook.js",
   "devDependencies":{

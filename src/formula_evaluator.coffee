@@ -5,6 +5,7 @@ moment = require("moment")
 moji = require("moji")
 multibyteLength = require('multibyte-length')
 multibyteSubstr = require('multibyte-substr')
+XRegExp = require("xregexp")
 require('moment-weekday-calc')
 
 ERROR_DIV0 = "#DIV/0!"
@@ -694,6 +695,14 @@ class FormulaEvaluator
     @checkArgumentSize(args, 2)
     Math.pow(@expectNumber(args[0]), @expectNumber(args[1]))
 
+
+  PROPER_RE = XRegExp("(^|\\PL)(\\pL)", "g")#アルファベット(英語以外も含む)以外
+  PROPER: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectString(args[0]).toLowerCase()
+    str.replace PROPER_RE, (m0, m1, m2)->
+      return String(m1)+m2.toUpperCase()
+      
   PERMUT: (args)->
     @checkArgumentSize(args, 2)
     n = @expectInteger(args[0])
