@@ -513,7 +513,7 @@ class FormulaEvaluator
 
     str = mbsubstr(str, 0, len)
     #2バイト文字の途中で終わっていた場合
-    if str.length < len
+    if multibyteLength(str) < len
       str += " "
     str
 
