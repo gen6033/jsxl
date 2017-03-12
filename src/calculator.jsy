@@ -38,6 +38,7 @@ module.exports = function(worksheet, formula){
 %left '&'
 %left '+' '-'
 %left '*' '/'
+%left '%'
 %left '^'
 %left SIGN
 %left ':' SPACES
@@ -68,6 +69,7 @@ term : constant
   | '+' term %prec SIGN {$$=evaluator.expectNumber($2);}
   | '-' term %prec SIGN {$$=-evaluator.expectNumber($2);}
   | array
+  | term SPACES
   ;
 constant : FALSE
   | TRUE
@@ -135,7 +137,6 @@ binary_operation : term '+' term {
       list.push($3);
       $$ = list;
     }
-  | term SPACES
   ;
 
 function_call: FUNC '(' function_args ')' {

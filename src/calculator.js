@@ -134,7 +134,7 @@ var YYTERMS = 28;
 var YYNONTERMS = 13;
 
 var yyaction = [
-     77,   59,   58,   42,   57,   56,    0,   12,   13,   14,
+     77,   60,   59,   42,   58,   57,    0,   12,   13,   14,
      15,   16,   17,   18,   19,   25,   27,   10,   11,-32766,
   -32766,   40,   24,   33,   13,   14,   15,   16,   17,   18,
      19,-32767,-32767,-32767,-32767,-32767,-32767,   19,   85,   20,
@@ -167,10 +167,10 @@ var yybase = [
 var YY2TBLSTATE = 34;
 
 var yydefault = [
-     41,    2,   27,   21,   22,   23,   24,   25,   26,32767,
+     41,    2,   28,   22,   23,   24,   25,   26,   27,32767,
   32767,32767,32767,32767,32767,32767,32767,32767,32767,32767,
-  32767,32767,32767,32767,32767,32767,   31,   28,   20,   15,
-     16,   17,   18,   41,    8,    9,32767,   19,   41,   41,
+  32767,32767,32767,32767,32767,32767,   31,   11,   21,   16,
+     17,   18,   19,   41,    8,    9,32767,   20,   41,   41,
      41,32767,32767,32767,32767
   ];
 
@@ -208,7 +208,7 @@ var yygdefault = [
 
 var yylhs = [
       0,    1,    2,    4,    4,    4,    4,    4,    4,    4,
-      4,    5,    5,    5,    5,    8,    8,    8,    8,    8,
+      4,    4,    5,    5,    5,    5,    8,    8,    8,    8,
       8,    8,    8,    8,    8,    8,    8,    8,    8,    7,
      10,   10,    6,    6,    6,    9,    9,   11,   11,   12,
       3,    3
@@ -216,8 +216,8 @@ var yylhs = [
 
 var yylen = [
       1,    1,    2,    1,    1,    1,    1,    3,    2,    2,
-      1,    1,    1,    1,    1,    3,    3,    3,    3,    3,
-      3,    3,    3,    3,    3,    3,    3,    3,    2,    4,
+      1,    2,    1,    1,    1,    1,    3,    3,    3,    3,
+      3,    3,    3,    3,    3,    3,    3,    3,    3,    4,
       1,    1,    1,    3,    3,    3,    2,    3,    1,    1,
       1,    0
   ];
@@ -320,7 +320,7 @@ function yyparse()
 {yyval=evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
         case 9:
 {yyval=-evaluator.expectNumber(yyastk[yysp-(2-2)]);} break;
-        case 15:
+        case 16:
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
@@ -329,7 +329,7 @@ function yyparse()
         yyval = Utils.offsetToDate(yyval);
       }
     } break;
-        case 16:
+        case 17:
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
@@ -338,7 +338,7 @@ function yyparse()
         yyval = Utils.offsetToDate(yyval);
       }
     } break;
-        case 17:
+        case 18:
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
@@ -347,7 +347,7 @@ function yyparse()
         yyval = Utils.offsetToDate(yyval);
       }
     } break;
-        case 18:
+        case 19:
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
@@ -356,7 +356,7 @@ function yyparse()
         yyval = Utils.offsetToDate(yyval);
       }
     } break;
-        case 19:
+        case 20:
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
@@ -365,17 +365,17 @@ function yyparse()
         yyval = Utils.offsetToDate(yyval);
       }
     } break;
-        case 20:
-{yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
         case 21:
-{yyval = yyastk[yysp-(3-1)] < yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
         case 22:
-{yyval = yyastk[yysp-(3-1)] <= yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] < yyastk[yysp-(3-3)];} break;
         case 23:
-{yyval = yyastk[yysp-(3-1)] > yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] <= yyastk[yysp-(3-3)];} break;
         case 24:
-{yyval = yyastk[yysp-(3-1)] >= yyastk[yysp-(3-3)];} break;
+{yyval = yyastk[yysp-(3-1)] > yyastk[yysp-(3-3)];} break;
         case 25:
+{yyval = yyastk[yysp-(3-1)] >= yyastk[yysp-(3-3)];} break;
+        case 26:
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
@@ -385,9 +385,9 @@ function yyparse()
         yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];
       }
     } break;
-        case 26:
-{yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
         case 27:
+{yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
+        case 28:
 {
       var list = [].concat(yyastk[yysp-(3-1)])
       list.push(yyastk[yysp-(3-3)]);
