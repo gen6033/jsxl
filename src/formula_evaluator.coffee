@@ -534,6 +534,11 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     Math.log10 @expectNumber(args[0])
 
+  LOWER: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectString(args[0])
+    str.toLowerCase()
+
   MINUTE: (args)->
     @checkArgumentSize(args, 1)
     @expectDate(args[0]).getMinutes()
