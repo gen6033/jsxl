@@ -740,6 +740,28 @@ class FormulaEvaluator
     max = @expectInteger(args[1])
     Math.floor(Math.random() * (max-min+1)) + min
 
+  REPLACE: (args)->
+    @checkArgumentSize(args, 4)
+    str = @expectString(args[0])
+    start = @expectInteger(args[1])
+    len = @expectInteger(args[2])
+    replace_str = @expectString(args[3])
+    if start < 1 || len < 0
+      @error(ERROR_VALUE)
+    arr = str.split("")
+    arr.splice(start-1, len, replace_str.split("")...)
+    arr.join("")
+
+  REPLACEB: (args)->
+    @checkArgumentSize(args, 4)
+    str = @expectString(args[0])
+    start = @expectInteger(args[1])
+    len = @expectInteger(args[2])
+    replace_str = @expectString(args[3])
+    left = @LEFTB([str, start - 1])
+    right = @MIDB([str, start + len, multibyteLength(str)])
+    left + replace_str + right
+
   ROMAN: (args)->
     @checkArgumentSize(args, 1, 2)
     n = @expectInteger(args[0])
