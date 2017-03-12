@@ -511,7 +511,11 @@ class FormulaEvaluator
       if len < 0
         @error(ERROR_VALUE)
 
-    multibyteSubstr(str, 0, len)
+    str = multibyteSubstr(str, 0, len)
+    #2バイト文字の途中で終わっていた場合
+    if str.length < len
+      str += " "
+    str
 
   LEN: (args)->
     @checkArgumentSize(args, 1)
