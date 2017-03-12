@@ -960,6 +960,10 @@ class FormulaEvaluator
       return Number(x)
     if Utils.isDate(x)
       return Utils.dateToOffset(Utils.parseDate(x))
+    if Utils.isString(x)
+      x = x.replace(/\s*,\s*/, "")
+      if Utils.isNumber(x)
+        return Number(x)
     @error(ERROR_VALUE)
 
   expectInteger:(x)->
