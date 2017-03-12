@@ -856,7 +856,7 @@ class FormulaEvaluator
     sign * @FLOOR([expr, digit])
 
   SEARCH: (args)->
-    @checkArgumentSize(args, 1, 3)
+    @checkArgumentSize(args, 2, 3)
     search = @expectString(args[0])
     target = @expectString(args[1])
     start = 1
@@ -872,7 +872,7 @@ class FormulaEvaluator
     start + pos + 1
 
   SEARCHB: (args)->
-    @checkArgumentSize(args, 1, 3)
+    @checkArgumentSize(args, 2, 3)
     search = @expectString(args[0])
     target = @expectString(args[1])
     start = 1
