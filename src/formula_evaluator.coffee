@@ -510,6 +510,16 @@ class FormulaEvaluator
 
     multibyteSubstr(str, 0, len)
 
+  LEN: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectString(args[0])
+    str.length
+
+  LENB: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectString(args[0])
+    multibyteLength(str)
+
   LN: (args)->
     @checkArgumentSize(args, 1)
     Math.log @expectNumber(args[0])
