@@ -855,6 +855,37 @@ class FormulaEvaluator
     digit = Math.pow(10, n)
     sign * @FLOOR([expr, digit])
 
+  SEARCH: (args)->
+    @checkArgumentSize(args, 1, 3)
+    search = @expectString(args[0])
+    target = @expectString(args[1])
+    start = 1
+    if args.length == 3
+      start = @expectInteger(args[2])
+    --start
+    if start < 0
+      @error(ERROR_VALUE)
+    target = target.substr(start)
+    pos = target.search(search)
+    if pos == -1
+      @error(ERROR_VALUE)
+    start + pos + 1
+
+  SEARCHB: (args)->
+    @checkArgumentSize(args, 1, 3)
+    search = @expectString(args[0])
+    target = @expectString(args[1])
+    start = 1
+    if args.length == 3
+      start = @expectInteger(args[2])
+    if start <= 0
+      @error(ERROR_VALUE)
+    target = @MIDB([target, start, multibyteLength(target)])
+    pos = target.search(search)
+    if pos == -1
+      @error(ERROR_VALUE)
+    start + multibyteLength(@LEFTB([target, pos]))
+
   SEC: (args)->
     @checkArgumentSize(args, 1)
     1 / Math.cos(@expectNumber(args[0]))
