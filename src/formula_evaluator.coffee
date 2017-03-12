@@ -560,20 +560,19 @@ class FormulaEvaluator
     str = @expectString(args[0])
     start = @expectInteger(args[1])
     len = @expectInteger(args[2])
+    --start
     if start < 0 || len < 0
       @error(ERROR_VALUE)
-    prefix = mbsubstr(str, 0, start)
     prefix_space = ""
     #2バイト文字の途中から始まっていた場合
-    if prefix.length < start
+    if multibyteLength(mbsubstr(str, 0, start)) < start
       prefix_space = " "
-    len2 = start + len - 1
-    str = mbsubstr(str, 0, len2)
+    len2 = start + len
     suffix_space = ""
     #2バイト文字の途中で終わっていた場合
-    if str.length < len2
+    if multibyteLength(mbsubstr(str, 0, len2)) < len2
       suffix_space = " "
-    prefix_space + str.replace(prefix, "") + suffix_space
+    prefix_space + mbsubstr(str, start, len) + suffix_space
 
   MINUTE: (args)->
     @checkArgumentSize(args, 1)
