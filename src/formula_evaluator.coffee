@@ -1023,6 +1023,13 @@ class FormulaEvaluator
 
     @ROUNDDOWN(args)
 
+  UNICHAR: (args)->
+    @checkArgumentSize(args, 1)
+    code = @expectInteger(args[0])
+    if code < 1
+      @error(ERROR_VALUE)
+    String.fromCharCode(code)
+
   WEEKDAY: (args)->
     @checkArgumentSize(args, 1, 2)
     dt = @expectMoment(args[0])
