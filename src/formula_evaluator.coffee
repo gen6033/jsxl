@@ -959,6 +959,10 @@ class FormulaEvaluator
         str.length > 0
     strings.join(delim)
 
+  TRIM: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectString(args[0])
+    str.replace(/\s+/g, " ").trim()
 
 
   SUM: (args)->
