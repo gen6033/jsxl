@@ -1035,6 +1035,11 @@ class FormulaEvaluator
     text = @expectString(args[0])
     text.charCodeAt(0)
 
+  UPPER: (args)->
+    @checkArgumentSize(args, 1)
+    str = @expectString(args[0])
+    str.toUpperCase()
+
   WEEKDAY: (args)->
     @checkArgumentSize(args, 1, 2)
     dt = @expectMoment(args[0])
