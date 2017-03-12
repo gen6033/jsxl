@@ -498,7 +498,8 @@ class FormulaEvaluator
     len = 1
     if args.length == 2
       len = @expectInteger(args[1])
-
+      if len < 0
+        @error(ERROR_VALUE)
     str.substr(0, len)
 
   LEFTB: (args)->
@@ -507,6 +508,8 @@ class FormulaEvaluator
     len = 1
     if args.length == 2
       len = @expectInteger(args[1])
+      if len < 0
+        @error(ERROR_VALUE)
 
     multibyteSubstr(str, 0, len)
 
