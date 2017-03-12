@@ -762,6 +762,15 @@ class FormulaEvaluator
     right = @MIDB([str, start + len, multibyteLength(str)])
     left + replace_str + right
 
+
+  REPT: (args)->
+    @checkArgumentSize(args, 2)
+    str = @expectString(args[0])
+    n = @expectInteger(args[1])
+    if n < 0
+      @error(ERROR_VALUE)
+    str.repeat(n)
+
   ROMAN: (args)->
     @checkArgumentSize(args, 1, 2)
     n = @expectInteger(args[0])
