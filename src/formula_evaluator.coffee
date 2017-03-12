@@ -700,7 +700,7 @@ class FormulaEvaluator
     str = @expectString(args[0]).toLowerCase()
     str.replace PROPER_RE, (m0, m1, m2)->
       return String(m1)+m2.toUpperCase()
-      
+
   PERMUT: (args)->
     @checkArgumentSize(args, 2)
     n = @expectInteger(args[0])
