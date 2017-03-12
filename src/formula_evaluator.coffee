@@ -147,6 +147,8 @@ class FormulaEvaluator
   CHAR: (args)->
     @checkArgumentSize(args, 1)
     code = @expectInteger(args[0])
+    unless 1 <= code <= 255
+      @error(ERROR_VALUE)
     String.fromCharCode(code)
 
   CLEAN: (args)->
