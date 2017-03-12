@@ -492,6 +492,24 @@ class FormulaEvaluator
     args = @expandRange(TYPE_INTEGER, args)
     math.lcm(args...)
 
+  LEFT: (args)->
+    @checkArgumentSize(args, 1, 2)
+    str = @expectString(args[0])
+    len = 1
+    if args.length == 2
+      len = @expectInteger(args[1])
+
+    str.substr(0, len)
+
+  LEFTB: (args)->
+    @checkArgumentSize(args, 1, 2)
+    str = @expectString(args[0])
+    len = 1
+    if args.length == 2
+      len = @expectInteger(args[1])
+
+    multibyteSubstr(str, 0, len)
+
   LN: (args)->
     @checkArgumentSize(args, 1)
     Math.log @expectNumber(args[0])
