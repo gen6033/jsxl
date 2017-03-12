@@ -27,6 +27,7 @@
     "moji":"*",
     "multibyte-length":"*",
     "multibyte-substr":"*",
+    "mb-substr":"*",
     "xregexp":"*"
   },
   "main": "./lib/workbook.js",

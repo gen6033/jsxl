@@ -4,7 +4,7 @@ math = require("mathjs")
 moment = require("moment")
 moji = require("moji")
 multibyteLength = require('multibyte-length')
-multibyteSubstr = require('multibyte-substr')
+mbsubstr = require('mb-substr')
 XRegExp = require("xregexp")
 require('moment-weekday-calc')
 
@@ -382,7 +382,7 @@ class FormulaEvaluator
     if args.length == 3
       start = @expectInteger(args[2])
     #検索対象でない部分を切り出す
-    prefix = multibyteSubstr(target, 0 , start)
+    prefix = mbsubstr(target, 0 , start)
     #開始位置に2バイト文字の途中が指定された場合の補正
     start = multibyteLength(prefix)
     #検索対象でない部分を取り除く
@@ -512,7 +512,7 @@ class FormulaEvaluator
       if len < 0
         @error(ERROR_VALUE)
 
-    str = multibyteSubstr(str, 0, len)
+    str = mbsubstr(str, 0, len)
     #2バイト文字の途中で終わっていた場合
     if str.length < len
       str += " "
@@ -563,13 +563,13 @@ class FormulaEvaluator
     len = @expectInteger(args[2])
     if start < 0 || len < 0
       @error(ERROR_VALUE)
-    prefix = multibyteSubstr(str, 0, start)
+    prefix = mbsubstr(str, 0, start)
     prefix_space = ""
     #2バイト文字の途中から始まっていた場合
     if prefix.length < start
       prefix_space = " "
     len2 = start + len - 1
-    str = multibyteSubstr(str, 0, len2)
+    str = mbsubstr(str, 0, len2)
     suffix_space = ""
     #2バイト文字の途中で終わっていた場合
     if str.length < len2
