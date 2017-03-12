@@ -383,7 +383,6 @@ class FormulaEvaluator
       start = @expectInteger(args[2])
     #検索対象でない部分を切り出す
     prefix = mbsubstr(target, 0 , start)
-    #開始位置に2バイト文字の途中が指定された場合の補正
     start = multibyteLength(prefix)
     #検索対象でない部分を取り除く
     target = target.replace(prefix, "")
