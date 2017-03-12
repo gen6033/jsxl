@@ -546,6 +546,35 @@ class FormulaEvaluator
     str = @expectString(args[0])
     str.toLowerCase()
 
+  MID: (args)->
+    @checkArgumentSize(args, 3)
+    str = @expectString(args[0])
+    start = @expectInteger(args[1])
+    len = @expectInteger(args[2])
+    if start < 0 || len < 0
+      @error(ERROR_VALUE)
+    str.substr(start-1, len)
+
+  MIDB: (args)->
+    @checkArgumentSize(args, 3)
+    str = @expectString(args[0])
+    start = @expectInteger(args[1])
+    len = @expectInteger(args[2])
+    if start < 0 || len < 0
+      @error(ERROR_VALUE)
+    prefix = multibyteSubstr(str, 0, start)
+    prefix_space = ""
+    #2バイト文字の途中から始まっていた場合
+    if prefix.length < start
+      prefix_space = " "
+    len2 = start + len - 1
+    str = multibyteSubstr(str, 0, len2)
+    suffix_space = ""
+    #2バイト文字の途中で終わっていた場合
+    if str.length < len2
+      suffix_space = " "
+    prefix_space + str.replace(prefix, "") + suffix_space
+
   MINUTE: (args)->
     @checkArgumentSize(args, 1)
     @expectDate(args[0]).getMinutes()
