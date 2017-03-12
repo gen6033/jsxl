@@ -1030,6 +1030,11 @@ class FormulaEvaluator
       @error(ERROR_VALUE)
     String.fromCharCode(code)
 
+  UNICODE: (args)->
+    @checkArgumentSize(args, 1)
+    text = @expectString(args[0])
+    text.charCodeAt(0)
+
   WEEKDAY: (args)->
     @checkArgumentSize(args, 1, 2)
     dt = @expectMoment(args[0])
