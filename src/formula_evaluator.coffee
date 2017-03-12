@@ -924,6 +924,26 @@ class FormulaEvaluator
       @error(ERROR_NUM)
     Math.sqrt n*Math.PI
 
+  SUBSTITUTE: (args)->
+    @checkArgumentSize(args, 3, 4)
+    str = @expectString(args[0])
+    search = @expectString(args[1])
+    replace = @expectString(args[2])
+    re = RegExp(search, "g")
+    if args.length == 3
+      str.replace(re, replace)
+    else
+      n = @expectInteger(args[3])
+      c = 0
+      str.replace re, (m0)->
+        ++c
+        if c == n
+          replace
+        else
+          m0
+
+
+
   SUM: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
     args = @expandRange(TYPE_NUMBER, args)
