@@ -660,6 +660,25 @@ class FormulaEvaluator
     @checkArgumentSize(args, 0)
     new Date()
 
+  NUMBERVALUE: (args)->
+    @checkArgumentSize(args, 1, 3)
+    str = @expectString(args[0]).replace(/\s/, "")
+    decimal_delim = "."
+    if args.length >= 2
+      decimal_delim = @expectString(args[1])
+    group_delim = ","
+    if args.length == 3
+      group_delim = @expectString(args[2])
+
+    parts = str.split(decimal_delim)
+    if parts.length >= 3
+      @error(ERROR_VALUE)
+    parts[0] = parts[0].replace(new RegExp(group_delim, "g"), "")
+    if parts.length == 2 && parts[1].search(group_delim) != -1
+      @error(ERROR_VALUE)
+
+    @expectNumber(parts.join(decimal_delim))
+
   ODD: (args)->
     @checkArgumentSize(args, 1)
     num = @expectNumber(args[0])
