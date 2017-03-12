@@ -20,6 +20,13 @@ class Cell
     if @_.value?._
       @_.value = @_.value._
 
+    if @_.value instanceof Object
+      if @_.value._
+        @_.value = @_.value._
+      else if @_.value.$['xml:space']
+        @_.value = ""
+
+
     if @_.formula?.$
       attr = @_.formula.$
       @_.formula = @_.formula._
