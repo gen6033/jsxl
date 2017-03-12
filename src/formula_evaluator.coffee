@@ -942,6 +942,12 @@ class FormulaEvaluator
         else
           m0
 
+  T: (args)->
+    @checkArgumentSize(args, 1)
+    x = @getValue(args[0])
+    unless Utils.isString(x)
+      x = ""
+    String(x)
 
 
   SUM: (args)->
