@@ -949,6 +949,17 @@ class FormulaEvaluator
       x = ""
     String(x)
 
+  TEXTJOIN: (args)->
+    @checkArgumentSize(args, 3, Number.MAX_VALUE)
+    delim = @expectString(args[0])
+    ignore_empty = @expectBoolean(args[1])
+    strings = @expandRange(TYPE_STRING, args.slice(2))
+    if ignore_empty
+      strings = strings.filter (str)->
+        str.length > 0
+    strings.join(delim)
+
+
 
   SUM: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
