@@ -563,6 +563,11 @@ class FormulaEvaluator
     --start
     if start < 0 || len < 0
       @error(ERROR_VALUE)
+
+    #start + len が文字列の長さを超える場合は補正する
+    if start + len > multibyteLength(str)
+      len = multibyteLength(str) - start
+
     prefix_space = ""
     #2バイト文字の途中から始まっていた場合
     if multibyteLength(mbsubstr(str, 0, start)) < start
