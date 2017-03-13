@@ -54,9 +54,13 @@ class FormulaEvaluator
           if Utils.isBoolean(x)
             res &&= !!x
             flag = true
+          else if x instanceof FormulaError
+            throw x
 
       else
         x = @getValue(arg)
+        if x instanceof FormulaError
+          throw x
         unless Utils.isBoolean(x)
           @error(FormulaError.VALUE)
         res &&= !!x
@@ -756,9 +760,13 @@ class FormulaEvaluator
           if Utils.isBoolean(x)
             res ||= !!x
             flag = true
+          else if x instanceof FormulaError
+            throw x
 
       else
         x = @getValue(arg)
+        if x instanceof FormulaError
+          throw x
         unless Utils.isBoolean(x)
           @error(FormulaError.VALUE)
         res ||= !!x
@@ -1239,9 +1247,13 @@ class FormulaEvaluator
           if Utils.isBoolean(x)
             true_count++ if !!x
             flag = true
+          else if x instanceof FormulaError
+            throw x
 
       else
         x = @getValue(arg)
+        if x instanceof FormulaError
+          throw x
         unless Utils.isBoolean(x)
           @error(FormulaError.VALUE)
         true_count++ if !!x
