@@ -70,7 +70,8 @@ class Cell
             if Utils.isNumber(val)
               val = Number(val)
         if @_.styleMixin.style.numberFormat.isDate()
-          val = Utils.offsetToDate(val)
+          if Utils.isNumber(val)
+            val = Utils.offsetToDate(val)
         val
 
       set: (val) ->
