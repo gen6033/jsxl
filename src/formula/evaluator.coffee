@@ -478,7 +478,7 @@ class FormulaEvaluator
     [cond, true_expr, false_expr] = args
     cond = @getValue(cond)
     if Utils.isNumber(cond)
-      cond = cond == 1
+      cond = !!cond
     else if !Utils.isBoolean(cond)
       @error(FormulaError.VALUE)
 
