@@ -150,15 +150,16 @@ binary_operation : term '+' term {
 function_call: FUNC '(' function_args ')' {
       var func = evaluator[$1];
       if(!func){
-        return FormulaError.NAME
-      }
-      try{
-        $$ = func.call(evaluator, [].concat($3));
-      }catch (e){
-        if(e instanceof FormulaError){
-          $$ = e
-        }else{
-          throw e
+        $$ = FormulaError.NAME;
+      }else{
+        try{
+          $$ = func.call(evaluator, [].concat($3));
+        }catch (e){
+          if(e instanceof FormulaError){
+            $$ = e
+          }else{
+            throw e
+          }
         }
       }
     }

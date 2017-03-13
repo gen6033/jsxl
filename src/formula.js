@@ -408,15 +408,16 @@ function yyparse()
 {
       var func = evaluator[yyastk[yysp-(4-1)]];
       if(!func){
-        return FormulaError.NAME
-      }
-      try{
-        yyval = func.call(evaluator, [].concat(yyastk[yysp-(4-3)]));
-      }catch (e){
-        if(e instanceof FormulaError){
-          yyval = e
-        }else{
-          throw e
+        yyval = FormulaError.NAME;
+      }else{
+        try{
+          yyval = func.call(evaluator, [].concat(yyastk[yysp-(4-3)]));
+        }catch (e){
+          if(e instanceof FormulaError){
+            yyval = e
+          }else{
+            throw e
+          }
         }
       }
     } break;
