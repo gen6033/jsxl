@@ -6,14 +6,8 @@ moji = require("moji")
 multibyteLength = require('multibyte-length')
 mbsubstr = require('mb-substr')
 XRegExp = require("xregexp")
+FormulaError = require("./error")
 require('moment-weekday-calc')
-
-ERROR_DIV0 = "#DIV/0!"
-ERROR_NA = "#N/A!"
-ERROR_NAME = "#NAME!"
-ERROR_NUM = "#NUM!"
-ERROR_NULL = "#NULL!"
-ERROR_VALUE = "#VALUE!"
 
 TYPE_NUMBER = 1
 TYPE_INTEGER = 2
@@ -118,7 +112,7 @@ class FormulaEvaluator
     if digit == 0
       return 0
     if expr >= 0 && digit < 0
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
     Math.ceil(expr/digit) * digit
 
   "CEILING.PRECISE": (args)->
@@ -148,7 +142,7 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     code = @expectInteger(args[0])
     unless 1 <= code <= 255
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     String.fromCharCode(code)
 
   CLEAN: (args)->
@@ -218,7 +212,7 @@ class FormulaEvaluator
     end = @expectMoment(args[1]).startOf("day")
     unit = @expectString(args[2]).toUpperCase()
     if start > end
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
     switch unit
       when "Y"
         end.diff(start, "years")
@@ -373,7 +367,7 @@ class FormulaEvaluator
 
     pos = target.substr(start).search(search)
     if pos == -1
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     start + pos + 1
 
   FINDB: (args)->
@@ -390,7 +384,7 @@ class FormulaEvaluator
     target = target.replace(prefix, "")
     pos = target.search(search)
     if pos == -1
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     s = target.substr(0, pos)
     start + multibyteLength(s) + 1
 
@@ -422,9 +416,9 @@ class FormulaEvaluator
     expr = @expectNumber(args[0])
     digit = @expectNumber(args[1])
     if digit == 0
-      @error(ERROR_DIV0)
+      @error(FormulaError.DIV0)
     if expr >= 0 && digit < 0
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
     Math.floor(expr/digit) * digit
 
   "FLOOR.PRECISE": (args)->
@@ -472,7 +466,7 @@ class FormulaEvaluator
     if Utils.isNumber(cond)
       cond = cond == 1
     else if !Utils.isBoolean(cond)
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
 
     if cond
       true_expr
@@ -501,7 +495,7 @@ class FormulaEvaluator
     if args.length == 2
       len = @expectInteger(args[1])
       if len < 0
-        @error(ERROR_VALUE)
+        @error(FormulaError.VALUE)
     str.substr(0, len)
 
   LEFTB: (args)->
@@ -511,7 +505,7 @@ class FormulaEvaluator
     if args.length == 2
       len = @expectInteger(args[1])
       if len < 0
-        @error(ERROR_VALUE)
+        @error(FormulaError.VALUE)
 
     str = mbsubstr(str, 0, len)
     #2バイト文字の途中で終わっていた場合
@@ -554,7 +548,7 @@ class FormulaEvaluator
     start = @expectInteger(args[1])
     len = @expectInteger(args[2])
     if start < 0 || len < 0
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     str.substr(start-1, len)
 
   MIDB: (args)->
@@ -564,7 +558,7 @@ class FormulaEvaluator
     len = @expectInteger(args[2])
     --start
     if start < 0 || len < 0
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
 
     #start + len が文字列の長さを超える場合は補正する
     if start + len > multibyteLength(str)
@@ -589,7 +583,7 @@ class FormulaEvaluator
     @checkArgumentSize(args, 2)
     n = @expectNumber(args[1])
     if n == 0
-      @error(ERROR_DIV0)
+      @error(FormulaError.DIV0)
     Math.sign(n) * Math.abs(@expectNumber(args[0]) % Math.abs(n))
 
   MONTH: (args)->
@@ -603,7 +597,7 @@ class FormulaEvaluator
     if m == 0 || n == 0
       return 0
     if Math.sign(m) != Math.sign(n)
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
     Math.round(m/n) * n
 
   MULTINOMIAL: (args)->
@@ -632,7 +626,7 @@ class FormulaEvaluator
       weekends = @getValue(args[2])
       if Utils.isString(weekends)
         if weekends.length != 7
-          @error(ERROR_VALUE)
+          @error(FormulaError.VALUE)
       else if Utils.isNumber(weekends)
         str = ""
         n = weekends
@@ -643,16 +637,16 @@ class FormulaEvaluator
           n -= 11
           str = "0000001"
         else
-          @error(ERROR_NUM)
+          @error(FormulaError.NUM)
         weekends = str.substr(-n) + str.slice(0, -n)
       else
-        @error(ERROR_VALUE)
+        @error(FormulaError.VALUE)
       weekdays = []
       for v,i in weekends.split("")
         if v == "0"
           weekdays.push i+1
         else if v != "1"
-          @error(ERROR_VALUE)
+          @error(FormulaError.VALUE)
     if args.length == 4
       excludes = @expandRange(TYPE_DATE, args[3])
     sign * moment().isoWeekdayCalc({
@@ -678,10 +672,10 @@ class FormulaEvaluator
 
     parts = str.split(decimal_delim)
     if parts.length >= 3
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     parts[0] = parts[0].replace(new RegExp(group_delim, "g"), "")
     if parts.length == 2 && parts[1].search(group_delim) != -1
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
 
     @expectNumber(parts.join(decimal_delim))
 
@@ -713,7 +707,7 @@ class FormulaEvaluator
     n = @expectInteger(args[0])
     r = @expectInteger(args[1])
     if n <= 0 || r < 0 || n < r
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
 
     math.permutations(n, r)
 
@@ -749,7 +743,7 @@ class FormulaEvaluator
     len = @expectInteger(args[2])
     replace_str = @expectString(args[3])
     if start < 1 || len < 0
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     arr = str.split("")
     arr.splice(start-1, len, replace_str.split("")...)
     arr.join("")
@@ -770,7 +764,7 @@ class FormulaEvaluator
     str = @expectString(args[0])
     n = @expectInteger(args[1])
     if n < 0
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     str.repeat(n)
 
   RIGHT: (args)->
@@ -790,7 +784,7 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1, 2)
     n = @expectInteger(args[0])
     if n >= 4000
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     opt = @getValue(args[1])
     if Utils.isBoolean(opt)
       if opt
@@ -866,11 +860,11 @@ class FormulaEvaluator
       start = @expectInteger(args[2])
     --start
     if start < 0
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     target = target.substr(start)
     pos = target.search(search)
     if pos == -1
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     start + pos + 1
 
   SEARCHB: (args)->
@@ -881,11 +875,11 @@ class FormulaEvaluator
     if args.length == 3
       start = @expectInteger(args[2])
     if start <= 0
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     target = @MIDB([target, start, multibyteLength(target)])
     pos = target.search(search)
     if pos == -1
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     start + multibyteLength(@LEFTB([target, pos]))
 
   SEC: (args)->
@@ -916,14 +910,14 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     n = @expectNumber(args[0])
     if n < 0
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
     Math.sqrt n
 
   SQRTPI: (args)->
     @checkArgumentSize(args, 1)
     n = @expectNumber(args[0])
     if n < 0
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
     Math.sqrt n*Math.PI
 
   SUBSTITUTE: (args)->
@@ -1027,7 +1021,7 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     code = @expectInteger(args[0])
     if code < 1
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     String.fromCharCode(code)
 
   UNICODE: (args)->
@@ -1061,7 +1055,7 @@ class FormulaEvaluator
         return weekday - 1
 
     unless 11 <= type <= 17
-      @error(ERROR_NUM)
+      @error(FormulaError.NUM)
 
     weekday = (weekday + 18 - type) % 7
     if weekday == 0
@@ -1102,7 +1096,7 @@ class FormulaEvaluator
       weekends = @getValue(args[2])
       if Utils.isString(weekends)
         if weekends.length != 7
-          @error(ERROR_VALUE)
+          @error(FormulaError.VALUE)
       else if Utils.isNumber(weekends)
         str = ""
         n = weekends
@@ -1113,16 +1107,16 @@ class FormulaEvaluator
           n -= 11
           str = "0000001"
         else
-          @error(ERROR_NUM)
+          @error(FormulaError.NUM)
         weekends = str.substr(-n) + str.slice(0, -n)
       else
-        @error(ERROR_VALUE)
+        @error(FormulaError.VALUE)
       weekdays = []
       for v,i in weekends.split("")
         if v == "0"
           weekdays.push i+1
         else if v != "1"
-          @error(ERROR_VALUE)
+          @error(FormulaError.VALUE)
     if args.length == 4
       excludes = @expandRange(TYPE_DATE, args[3])
 
@@ -1169,10 +1163,10 @@ class FormulaEvaluator
       when 4
         @DAYS360([start, end, true]) / 360
       else
-        @error(ERROR_NUM)
+        @error(FormulaError.NUM)
 
   error:(err)->
-    throw new Error(err)
+    throw err
 
 
   getValue:(range)->
@@ -1188,9 +1182,9 @@ class FormulaEvaluator
       else
         cell.value
     else if size == 0
-      @error(ERROR_NULL)
+      @error(FormulaError.NULL)
     else
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
 
   expectNumber:(x)->
     x = @getValue(x)
@@ -1204,7 +1198,7 @@ class FormulaEvaluator
       x = x.replace(/\s*,\s*/, "")
       if Utils.isNumber(x)
         return Number(x)
-    @error(ERROR_VALUE)
+    @error(FormulaError.VALUE)
 
   expectInteger:(x)->
     parseInt @expectNumber(x)
@@ -1217,7 +1211,7 @@ class FormulaEvaluator
       return String(x)
     if Utils.isBoolean(x)
       return String(x*1)
-    @error(ERROR_VALUE)
+    @error(FormulaError.VALUE)
 
   expectDate:(x)->
     x = @getValue(x)
@@ -1227,7 +1221,7 @@ class FormulaEvaluator
       x = 0
     if Utils.isNumber(x)
       return Utils.offsetToDate(x)
-    @error(ERROR_VALUE)
+    @error(FormulaError.VALUE)
 
   expectMoment:(x)->
     moment(@expectDate(x))
@@ -1237,14 +1231,14 @@ class FormulaEvaluator
     if Utils.isDateString(x)
       return x
 
-    @error(ERROR_VALUE)
+    @error(FormulaError.VALUE)
 
   expectBoolean:(x)->
     x = @getValue(x)
     if x == undefined
       return false
     unless Utils.isBoolean(x)
-      @error(ERROR_VALUE)
+      @error(FormulaError.VALUE)
     !!x
 
   expect:(type, x)->

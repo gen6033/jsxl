@@ -1,6 +1,7 @@
 
 Utils = require("./utils");
 Range = require("./range").Range;
+FormulaError = require("./formula/error")
 FormulaEvaluator = require("./formula/evaluator")
 
 function yyerror(msg) {
@@ -26,7 +27,6 @@ module.exports = function(worksheet, formula){
   }
   var ans;
   var evaluator = new FormulaEvaluator(worksheet);
-
 
 /* Prototype file of JavaScript parser.
  * Written by MORI Koichiro
@@ -401,7 +401,19 @@ function yyparse()
     } break;
         case 30:
 {
-      yyval = evaluator[yyastk[yysp-(4-1)]]([].concat(yyastk[yysp-(4-3)]));
+      var func = evaluator[yyastk[yysp-(4-1)]];
+      if(!func){
+        return FormulaError.NAME
+      }
+      try{
+        yyval = func.call(evaluator, [].concat(yyastk[yysp-(4-3)]));
+      }catch (e){
+        if(e instanceof FormulaError){
+          yyval = e
+        }else{
+          throw e
+        }
+      }
     } break;
         case 32:
 {yyval = []} break;

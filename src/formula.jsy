@@ -1,6 +1,7 @@
 %{
 Utils = require("./utils");
 Range = require("./range").Range;
+FormulaError = require("./formula/error")
 FormulaEvaluator = require("./formula/evaluator")
 
 function yyerror(msg) {
@@ -26,7 +27,6 @@ module.exports = function(worksheet, formula){
   }
   var ans;
   var evaluator = new FormulaEvaluator(worksheet);
-
 %}
 
 
@@ -143,7 +143,19 @@ binary_operation : term '+' term {
   ;
 
 function_call: FUNC '(' function_args ')' {
-      $$ = evaluator[$1]([].concat($3));
+      var func = evaluator[$1];
+      if(!func){
+        return FormulaError.NAME
+      }
+      try{
+        $$ = func.call(evaluator, [].concat($3));
+      }catch (e){
+        if(e instanceof FormulaError){
+          $$ = e
+        }else{
+          throw e
+        }
+      }
     }
   ;
 
