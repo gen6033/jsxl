@@ -37,6 +37,9 @@ module.exports = {
   isString: (obj)->
     typeof (obj) == "string" || obj instanceof String
 
+  isPureNumber: (x)->
+    typeof(x) == 'number' || x instanceof Number
+
   isNumber: (x)->
     if typeof(x) != 'number' && typeof(x) != 'string'
       false
@@ -44,7 +47,7 @@ module.exports = {
       !isNaN(x - parseFloat(x))
 
   isBoolean: (obj)->
-    typeof (obj) == "boolean" || obj instanceof Boolean
+    typeof (obj) == "boolean" || obj instanceof Boolean || @isPureNumber(obj)
 
   isDate: (obj)->
     !@isNumber(obj) && (obj instanceof Date || @isDateString(obj))

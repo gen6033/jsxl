@@ -51,13 +51,13 @@ class FormulaEvaluator
     for arg in args
       if arg instanceof Range
         for x in @expandRange(TYPE_ANY, arg)
-          if Utils.isBoolean(x) || Utils.isNumber(x)
+          if Utils.isBoolean(x)
             res &&= !!x
             flag = true
 
       else
         x = @getValue(arg)
-        unless Utils.isBoolean(x) || Utils.isNumber(x)
+        unless Utils.isBoolean(x)
           @error(FormulaError.VALUE)
         res &&= !!x
         flag = true
@@ -490,11 +490,10 @@ class FormulaEvaluator
     @checkArgumentSize(args, 3)
     [cond, true_expr, false_expr] = args
     cond = @getValue(cond)
-    if Utils.isNumber(cond)
-      cond = !!cond
-    else if !Utils.isBoolean(cond)
+    unless Utils.isBoolean(cond)
       @error(FormulaError.VALUE)
-
+    #数値の場合があるのでboolにキャスト
+    cond = !!cond
     if cond
       true_expr
     else
@@ -754,13 +753,13 @@ class FormulaEvaluator
     for arg in args
       if arg instanceof Range
         for x in @expandRange(TYPE_ANY, arg)
-          if Utils.isBoolean(x) || Utils.isNumber(x)
+          if Utils.isBoolean(x)
             res ||= !!x
             flag = true
 
       else
         x = @getValue(arg)
-        unless Utils.isBoolean(x) || Utils.isNumber(x)
+        unless Utils.isBoolean(x)
           @error(FormulaError.VALUE)
         res ||= !!x
         flag = true
@@ -1237,13 +1236,13 @@ class FormulaEvaluator
     for arg in args
       if arg instanceof Range
         for x in @expandRange(TYPE_ANY, arg)
-          if Utils.isBoolean(x) || Utils.isNumber(x)
+          if Utils.isBoolean(x)
             true_count++ if !!x
             flag = true
 
       else
         x = @getValue(arg)
-        unless Utils.isBoolean(x) || Utils.isNumber(x)
+        unless Utils.isBoolean(x)
           @error(FormulaError.VALUE)
         true_count++ if !!x
         flag = true
