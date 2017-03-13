@@ -699,6 +699,10 @@ class FormulaEvaluator
       exclusions:excludes
     })
 
+  NOT: (args)->
+    @checkArgumentSize(args, 1)
+    !@expectNumber(args[0])
+
   NOW: (args)->
     @checkArgumentSize(args, 0)
     new Date()
@@ -729,6 +733,14 @@ class FormulaEvaluator
       @EVEN([num+1])-1
     else
       @EVEN([num-1])+1
+
+  OR: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_BOOLEAN, args)
+    flag = false
+    for v in args
+      flag ||= v
+    flag
 
   PI: (args)->
     Math.PI
