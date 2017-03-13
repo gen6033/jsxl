@@ -46,11 +46,24 @@ class FormulaEvaluator
 
   AND: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
-    args = @expandRange(TYPE_BOOLEAN, args)
-    flag = true
-    for v in args
-      flag &&= v
-    flag
+    res = true
+    flag = false
+    for arg in args
+      if arg instanceof Range
+        for x in @expandRange(TYPE_ANY, arg)
+          if Utils.isBoolean(x) || Utils.isNumber(x)
+            res &&= !!x
+            flag = true
+
+      else
+        x = @getValue(arg)
+        unless Utils.isBoolean(x) || Utils.isNumber(x)
+          @error(FormulaError.VALUE)
+        res &&= !!x
+        flag = true
+    unless flag
+      @error(FormulaError.VALUE)
+    res
 
   ARABIC: (args)->
     @checkArgumentSize(args, 1)
@@ -736,11 +749,24 @@ class FormulaEvaluator
 
   OR: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
-    args = @expandRange(TYPE_BOOLEAN, args)
+    res = false
     flag = false
-    for v in args
-      flag ||= v
-    flag
+    for arg in args
+      if arg instanceof Range
+        for x in @expandRange(TYPE_ANY, arg)
+          if Utils.isBoolean(x) || Utils.isNumber(x)
+            res ||= !!x
+            flag = true
+
+      else
+        x = @getValue(arg)
+        unless Utils.isBoolean(x) || Utils.isNumber(x)
+          @error(FormulaError.VALUE)
+        res ||= !!x
+        flag = true
+    unless flag
+      @error(FormulaError.VALUE)
+    res
 
   PI: (args)->
     Math.PI
