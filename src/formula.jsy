@@ -1,7 +1,7 @@
 %{
 Utils = require("./utils");
 Range = require("./range").Range;
-FormulaEvaluator = require("./formula_evaluator")
+FormulaEvaluator = require("./formula/evaluator")
 
 function yyerror(msg) {
   console.log(msg);

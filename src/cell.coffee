@@ -1,6 +1,6 @@
 Utils = require('./utils')
 StyleMixin = require('./style_mixin')
-Calculator = require('./calculator')
+Calculator = require('./formula')
 
 class Cell
   StyleMixin.mixin(@prototype)

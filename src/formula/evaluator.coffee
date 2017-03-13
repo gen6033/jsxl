@@ -1,5 +1,5 @@
 
-Utils = require("./utils")
+Utils = require("../utils")
 math = require("mathjs")
 moment = require("moment")
 moji = require("moji")
