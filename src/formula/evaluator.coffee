@@ -364,6 +364,11 @@ class FormulaEvaluator
         x * fact2(x-2)
     fact2(n)
 
+  FALSE: (args)->
+    @checkArgumentSize(args, 0)
+    false
+
+
   FIND: (args)->
     @checkArgumentSize(args, 2, 3)
     search = @expectString(args[0])
@@ -968,6 +973,9 @@ class FormulaEvaluator
     str = @expectString(args[0])
     str.replace(/\s+/g, " ").trim()
 
+  TRUE: (args)->
+    @checkArgumentSize(args, 0)
+    true
 
   SUM: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)

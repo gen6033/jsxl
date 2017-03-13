@@ -509,7 +509,7 @@ function yyparse()
     var m;
 
     //TRUE
-    m = buffer.match(/^TRUE/i);
+    m = buffer.match(/^TRUE(?!\()/i);
     if(m){
       yylval = true
       buffer = buffer.substr(m[0].length);
@@ -517,7 +517,7 @@ function yyparse()
     }
 
     //FALSE
-    m = buffer.match(/^FALSE/i);
+    m = buffer.match(/^FALSE(?!\()/i);
     if(m){
       yylval = false
       buffer = buffer.substr(m[0].length);
