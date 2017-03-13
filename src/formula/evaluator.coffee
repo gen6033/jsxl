@@ -1035,6 +1035,20 @@ class FormulaEvaluator
       sum += num*num
     sum
 
+
+  SWITCH: (args)->
+    @checkArgumentSize(args, 3, Number.MAX_VALUE)
+    args = @expandRange(TYPE_ANY, args)
+    if args.length % 2 == 1
+      @error(FormulaError.NA)
+
+    x = args[0]
+    for y,i in args when i % 2 == 1
+      if x == y
+        return args[i+1]
+    args[args.length-1]
+
+
   TAN: (args)->
     @checkArgumentSize(args, 1)
     Math.tan @expectNumber(args[0])
