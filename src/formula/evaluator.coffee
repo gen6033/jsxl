@@ -43,6 +43,14 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     Math.atanh (1/@expectNumber(args[0]))
 
+  AND: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_BOOLEAN, args)
+    flag = true
+    for v in args
+      flag &&= v
+    flag
+
   ARABIC: (args)->
     @checkArgumentSize(args, 1)
     list = @expectString(args[0]).toUpperCase().trim().split("").reverse().map (c)->
