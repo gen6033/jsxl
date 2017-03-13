@@ -302,7 +302,7 @@ function yyparse()
         /* Following line will be replaced by reduce actions */
         switch(yyn) {
         case 1:
-{ans = yyastk[yysp-(1-1)];} break;
+{ans = evaluator.getValue(yyastk[yysp-(1-1)]);} break;
         case 2:
 {yyval=yyastk[yysp-(2-2)];} break;
         case 7:

@@ -44,7 +44,7 @@ module.exports = function(worksheet, formula){
 %left ':' SPACES
 
 %%
-start: expression {ans = $1;}
+start: expression {ans = evaluator.getValue($1);}
   ;
 
 expression: spaces term {$$=$2;}
