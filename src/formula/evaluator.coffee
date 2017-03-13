@@ -138,6 +138,23 @@ class FormulaEvaluator
       @error(FormulaError.DIV0)
     sum / size
 
+  AVEDEV: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    avg = @AVERAGE(args)
+    args = @expandRange(TYPE_ANY, args)
+    sum = 0
+    size = 0
+    for arg in args
+      if Utils.isPureNumber(arg) || Utils.isBoolean(arg)
+        sum += Math.abs(avg - Number(arg))
+        size++
+      else if arg instanceof FormulaError
+        throw arg
+
+    if size == 0
+      @error(FormulaError.DIV0)
+    sum / size
+
   AVERAGEA: (args)->
     @checkArgumentSize(args, 1, Number.MAX_VALUE)
     args = @expandRange(TYPE_ANY, args)
