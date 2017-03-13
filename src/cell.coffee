@@ -64,6 +64,11 @@ class Cell
         switch @_.type
           when "s"
             val = @workbook._.sst.get(@_.value)
+          when "str"
+            val = String(val)
+          else
+            if Utils.isNumber(val)
+              val = Number(val)
         if @_.styleMixin.style.numberFormat.isDate()
           val = Utils.offsetToDate(val)
         val
