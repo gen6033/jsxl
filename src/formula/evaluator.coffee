@@ -1230,6 +1230,27 @@ class FormulaEvaluator
     args.splice(2, 0, 1)
     @["WORKDAYS.INTL"](args)
 
+  XOR: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    true_count = 0
+    flag = false
+    for arg in args
+      if arg instanceof Range
+        for x in @expandRange(TYPE_ANY, arg)
+          if Utils.isBoolean(x) || Utils.isNumber(x)
+            true_count++ if !!x
+            flag = true
+
+      else
+        x = @getValue(arg)
+        unless Utils.isBoolean(x) || Utils.isNumber(x)
+          @error(FormulaError.VALUE)
+        true_count++ if !!x
+        flag = true
+    unless flag
+      @error(FormulaError.VALUE)
+    true_count % 2 == 1
+
 
   YEAR: (args)->
     @checkArgumentSize(args, 1)
