@@ -107,9 +107,14 @@ binary_operation : term '+' term {
   | term '/' term {
       var a = $1;
       var b = $3;
-      $$ = evaluator.expectNumber(a) / evaluator.expectNumber(b);
-      if(Utils.isDate(a) || Utils.isDate(b)){
-        $$ = Utils.offsetToDate($$);
+      var num_b = evaluator.expectNumber(b);
+      if(num_b == 0){
+        $$ = FormulaError.DIV0;
+      }else{
+        $$ = evaluator.expectNumber(a) / num_b;
+        if(Utils.isDate(a) || Utils.isDate(b)){
+          $$ = Utils.offsetToDate($$);
+        }
       }
     }
   | term '^' term {

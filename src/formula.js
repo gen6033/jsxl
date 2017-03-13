@@ -357,9 +357,14 @@ function yyparse()
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
-      yyval = evaluator.expectNumber(a) / evaluator.expectNumber(b);
-      if(Utils.isDate(a) || Utils.isDate(b)){
-        yyval = Utils.offsetToDate(yyval);
+      var num_b = evaluator.expectNumber(b);
+      if(num_b == 0){
+        yyval = FormulaError.DIV0;
+      }else{
+        yyval = evaluator.expectNumber(a) / num_b;
+        if(Utils.isDate(a) || Utils.isDate(b)){
+          yyval = Utils.offsetToDate(yyval);
+        }
       }
     } break;
         case 21:
