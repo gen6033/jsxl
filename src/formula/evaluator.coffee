@@ -122,6 +122,21 @@ class FormulaEvaluator
     @checkArgumentSize(args, 1)
     Math.atanh @expectNumber(args[0])
 
+  AVERAGE: (args)->
+    @checkArgumentSize(args, 1, Number.MAX_VALUE)
+    args = @expandRange(TYPE_ANY, args)
+    sum = 0
+    size = 0
+    for arg in args
+      if Utils.isPureNumber(arg) || Utils.isBoolean(arg)
+        sum += Number(arg)
+        size++
+      else if arg instanceof FormulaError
+        throw arg
+
+    if size == 0
+      @error(FormulaError.DIV0)
+    sum / size
   BASE: (args)->
     @checkArgumentSize(args, 2, 3)
     [n, base, len] = args
