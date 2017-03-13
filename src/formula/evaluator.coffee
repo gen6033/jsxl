@@ -486,6 +486,13 @@ class FormulaEvaluator
     else
       false_expr
 
+  IFERROR: (args)->
+    @checkArgumentSize(args, 2)
+    x = @getValue(args[0])
+    if x instanceof FormulaError
+      return @getValue(args[1])
+    x
+
   INT: (args)->
     @checkArgumentSize(args, 1)
     args.push 1
