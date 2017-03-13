@@ -17,6 +17,7 @@ TYPE_DATE_STRING = 5
 TYPE_BOOLEAN = 6
 TYPE_PURE_NUMBER = 7
 TYPE_PURE_INTEGER = 8
+TYPE_ANY = 100
 
 class FormulaEvaluator
 
@@ -499,6 +500,17 @@ class FormulaEvaluator
     if x == FormulaError.NA
       return @getValue(args[1])
     x
+
+  IFS: (args)->
+    @checkArgumentSize(args, 2, Number.MAX_VALUE)
+    args = @expandRange(TYPE_ANY, args)
+    if args.length % 2 == 1
+      @error(FormulaError.NA)
+
+    for x,i in args when i % 2 == 0
+      if @expectBoolean(x)
+        return args[i+1]
+    @error(FormulaError.NA)
 
   INT: (args)->
     @checkArgumentSize(args, 1)
@@ -1293,6 +1305,8 @@ class FormulaEvaluator
         @expectPureNumber(x)
       when TYPE_PURE_INTEGER
         @expectPureInteger(x)
+      when TYPE_ANY
+        @getValue(x)
 
 
   expandRange:(type, args)->
