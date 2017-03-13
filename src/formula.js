@@ -6,6 +6,7 @@ FormulaEvaluator = require("./formula/evaluator")
 
 function yyerror(msg) {
   console.log(msg);
+  throw FormulaError.NAME;
 }
 
 
