@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "postinstall": "coffee -bco lib/ src/"
+    "postinstall": "coffee -bco lib/ src/ && cp src/formula.js lib/"
   },
   "keywords": ["jsxl", "xlsx", "excel", "office", "spreadsheet", "workbook", "worksheet"],
   "author": "Genki Sakanashi",
