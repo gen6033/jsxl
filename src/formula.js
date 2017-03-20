@@ -392,11 +392,11 @@ function yyparse()
       var a = evaluator.getValue(yyastk[yysp-(3-1)]);
       var b = evaluator.getValue(yyastk[yysp-(3-3)]);
       if(Utils.isNumber(a) && Utils.isNumber(b)){
-        yyval = yyastk[yysp-(3-1)] == yyastk[yysp-(3-3)];
+        yyval = a == b;
       }else if(Utils.isString(a) && Utils.isString(b)){
         yyval = (String(a).toLowerCase() == String(b).toLowerCase())
       }else{
-        yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];
+        yyval = a === b;
       }
     } break;
         case 28:
