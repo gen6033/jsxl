@@ -1357,10 +1357,7 @@ class FormulaEvaluator
       cell = null
       range.each (r, c)=>
         cell = @worksheet.getCell(r, c)
-      if cell.formula
-        cell.calculate()
-      else
-        cell.value
+      cell.calculate()
     else if size == 0
       @error(FormulaError.NULL)
     else

@@ -108,7 +108,9 @@ class Cell
         s
 
   calculate: ->
-    Calculator(@worksheet, @formula)
+    if @formula
+      @value = Calculator(@worksheet, @formula)
+    @value
 
   toXmlObj: ->
 
