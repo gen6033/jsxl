@@ -391,7 +391,9 @@ function yyparse()
 {
       var a = yyastk[yysp-(3-1)];
       var b = yyastk[yysp-(3-3)];
-      if(Utils.isString(a) && Utils.isString(b)){
+      if(Utils.isNumber(a) && Utils.isNumber(b)){
+        yyval = yyastk[yysp-(3-1)] == yyastk[yysp-(3-3)];
+      }else if(Utils.isString(a) && Utils.isString(b)){
         yyval = (String(a).toLowerCase() == String(b).toLowerCase())
       }else{
         yyval = yyastk[yysp-(3-1)] === yyastk[yysp-(3-3)];

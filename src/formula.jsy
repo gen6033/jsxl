@@ -134,7 +134,9 @@ binary_operation : term '+' term {
   | term '=' term {
       var a = $1;
       var b = $3;
-      if(Utils.isString(a) && Utils.isString(b)){
+      if(Utils.isNumber(a) && Utils.isNumber(b)){
+        $$ = $1 == $3;
+      }else if(Utils.isString(a) && Utils.isString(b)){
         $$ = (String(a).toLowerCase() == String(b).toLowerCase())
       }else{
         $$ = $1 === $3;
