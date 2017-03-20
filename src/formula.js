@@ -380,17 +380,17 @@ function yyparse()
         case 22:
 {yyval = evaluator.expectString(yyastk[yysp-(3-1)])+evaluator.expectString(yyastk[yysp-(3-3)]);} break;
         case 23:
-{yyval = yyastk[yysp-(3-1)] < yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.getValue(yyastk[yysp-(3-1)]) < evaluator.getValue(yyastk[yysp-(3-3)]);} break;
         case 24:
-{yyval = yyastk[yysp-(3-1)] <= yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.getValue(yyastk[yysp-(3-1)]) <= evaluator.getValue(yyastk[yysp-(3-3)]);} break;
         case 25:
-{yyval = yyastk[yysp-(3-1)] > yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.getValue(yyastk[yysp-(3-1)]) > evaluator.getValue(yyastk[yysp-(3-3)]);} break;
         case 26:
-{yyval = yyastk[yysp-(3-1)] >= yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.getValue(yyastk[yysp-(3-1)]) >= evaluator.getValue(yyastk[yysp-(3-3)]);} break;
         case 27:
 {
-      var a = yyastk[yysp-(3-1)];
-      var b = yyastk[yysp-(3-3)];
+      var a = evaluator.getValue(yyastk[yysp-(3-1)]);
+      var b = evaluator.getValue(yyastk[yysp-(3-3)]);
       if(Utils.isNumber(a) && Utils.isNumber(b)){
         yyval = yyastk[yysp-(3-1)] == yyastk[yysp-(3-3)];
       }else if(Utils.isString(a) && Utils.isString(b)){
@@ -400,7 +400,7 @@ function yyparse()
       }
     } break;
         case 28:
-{yyval = yyastk[yysp-(3-1)] !== yyastk[yysp-(3-3)];} break;
+{yyval = evaluator.getValue(yyastk[yysp-(3-1)]) !== evaluator.getValue(yyastk[yysp-(3-3)]);} break;
         case 29:
 {
       var list = [].concat(yyastk[yysp-(3-1)])

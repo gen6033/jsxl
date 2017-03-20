@@ -127,13 +127,13 @@ binary_operation : term '+' term {
       }
     }
   | term '&' term {$$ = evaluator.expectString($1)+evaluator.expectString($3);}
-  | term '<' term {$$ = $1 < $3;}
-  | term LE term {$$ = $1 <= $3;}
-  | term '>' term {$$ = $1 > $3;}
-  | term GE term {$$ = $1 >= $3;}
+  | term '<' term {$$ = evaluator.getValue($1) < evaluator.getValue($3);}
+  | term LE term {$$ = evaluator.getValue($1) <= evaluator.getValue($3);}
+  | term '>' term {$$ = evaluator.getValue($1) > evaluator.getValue($3);}
+  | term GE term {$$ = evaluator.getValue($1) >= evaluator.getValue($3);}
   | term '=' term {
-      var a = $1;
-      var b = $3;
+      var a = evaluator.getValue($1);
+      var b = evaluator.getValue($3);
       if(Utils.isNumber(a) && Utils.isNumber(b)){
         $$ = $1 == $3;
       }else if(Utils.isString(a) && Utils.isString(b)){
@@ -142,7 +142,7 @@ binary_operation : term '+' term {
         $$ = $1 === $3;
       }
     }
-  | term NEQ  term {$$ = $1 !== $3;}
+  | term NEQ  term {$$ = evaluator.getValue($1) !== evaluator.getValue($3);}
   | term ',' term {
       var list = [].concat($1)
       list.push($3);
