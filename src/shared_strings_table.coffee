@@ -23,9 +23,17 @@ class SharedStringsTable
       @_.count = xmlobj.sst.$.count
       @_.uniqueCount = xmlobj.sst.$.uniqueCount
       for si in xmlobj.sst.si
-        str = si.t[0]
-        if str._
-          str = str._
+        if si.t
+          str = si.t[0]
+          if str._
+            str = str._
+        else
+          str = ""
+          for r in si.r
+            s = r.t[0]
+            if s._
+              s = s._
+            str += s
         str += ""
         @_.strings.push str.replace(/\r/g, "")
 
