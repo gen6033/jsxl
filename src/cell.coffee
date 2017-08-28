@@ -75,7 +75,7 @@ class Cell
         val
 
       set: (val) ->
-        if typeof val ==  "number"
+        if Utils.isNumber(val)
           @_.type = null
         else if val instanceof Date
           @_.type = null
