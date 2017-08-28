@@ -27,6 +27,8 @@ class SharedStringsTable
           str = si.t[0]
           if str._
             str = str._
+          else if str.$
+            str = " "
         else
           str = ""
           for r in si.r
