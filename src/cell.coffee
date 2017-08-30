@@ -79,7 +79,7 @@ class Cell
           @_.type = null
         else if val instanceof Date
           @_.type = null
-          val = Utisl.dateToOffset(val)
+          val = Utils.dateToOffset(val)
         else
           val = @workbook._.sst.add(val)
           @_.type = "s"
