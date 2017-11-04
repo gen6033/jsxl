@@ -83,7 +83,6 @@ class Cell
         else
           val = @workbook._.sst.add(val)
           @_.type = "s"
-        @_.formula = undefined
         @_.value = val
 
     "formula":
